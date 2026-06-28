@@ -1,0 +1,23 @@
+# Development only - uses ts-node for hot reload. Production uses multi-stage build.
+FROM node:20-alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy package.json, package-lock.json (if present) and tsconfig.json first for layer caching
+COPY package*.json tsconfig.json ./
+
+# Install all dependencies (including devDependencies for ts-node, nodemon, etc.)
+RUN npm install
+
+# Copy the rest of the backend source files
+COPY . .
+
+# Expose port 4000 for the Express API
+EXPOSE 4000
+
+# Install development tools globally
+RUN npm install -g nodemon ts-node tsconfig-paths
+
+# Start the application using nodemon and ts-node for hot reload
+CMD ["nodemon", "--watch", "src", "--ext", "ts", "--exec", "ts-node -r tsconfig-paths/register src/index.ts"]

@@ -1,0 +1,81 @@
+# SchemaForge SaaS Development Environment Docker Compose Configuration
+# This file starts PostgreSQL and Redis databases locally for development.
+# The API service configuration is commented out for now since it is run locally.
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: schemaforge-postgres
+    restart: unless-stopped
+    # Environment variables interpolated from the root .env file
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # Map the standard Postgres port 5432 from container to host
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Healthcheck to verify Postgres is ready to accept connections before other services start
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # Redis Cache Service
+  redis:
+    image: redis:7-alpine
+    container_name: schemaforge-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    # Map the standard Redis port 6379 from container to host
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    # Healthcheck using redis-cli with authentication to ping the Redis server
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping" ]
+      interval: 5s
+      retries: 10
+  # API Service (Commented out for now - run via 'npm run dev' locally)
+  # api:
+  #   # Build using the dev Dockerfile located inside the backend directory
+  #   build:
+  #     context: .
+  #     dockerfile: ./backend/Dockerfile.dev
+  #   container_name: schemaforge-api
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${PORT:-4000}:${PORT:-4000}"
+  #   # Mount local backend src folder to container for hot-reloading
+  #   volumes:
+  #     - ./backend/src:/app/src
+  #   # Inject all required backend environment variables
+  #   environment:
+  #     - PORT=${PORT}
+  #     - NODE_ENV=${NODE_ENV}
+  #     - DATABASE_URL=${DATABASE_URL}
+  #     - REDIS_URL=${REDIS_URL}
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+  #     - FRONTEND_URL=${FRONTEND_URL}
+  #     - BCRYPT_ROUNDS=${BCRYPT_ROUNDS}
+  #   # Wait for both postgres and redis to be fully healthy before starting the API
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+
+  # Declare persistent named volumes
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
