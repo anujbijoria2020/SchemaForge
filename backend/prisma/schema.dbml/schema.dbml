@@ -1,0 +1,240 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id String [pk]
+  email String [unique, not null]
+  passwordHash String
+  displayName String [not null]
+  avatarUrl String
+  isVerified Boolean [not null, default: false]
+  authProvider String [not null, default: 'local']
+  providerId String
+  plan String [not null, default: 'free']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  lastLoginAt DateTime
+  ownedWorkspaces workspaces [not null]
+  memberships workspace_members [not null]
+  createdProjects projects [not null]
+  comments comments [not null]
+  activityLogs activity_logs [not null]
+  aiGenerations ai_generations [not null]
+  notifications notifications [not null]
+}
+
+Table workspaces {
+  id String [pk]
+  name String [not null]
+  slug String [unique, not null]
+  description String
+  avatarUrl String
+  ownerId String [not null]
+  plan String [not null, default: 'free']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  owner users [not null]
+  members workspace_members [not null]
+  projects projects [not null]
+  invitations workspace_invitations [not null]
+  activityLogs activity_logs [not null]
+}
+
+Table workspace_members {
+  id String [pk]
+  workspaceId String [not null]
+  userId String [not null]
+  role String [not null, default: 'editor']
+  joinedAt DateTime [default: `now()`, not null]
+  workspace workspaces [not null]
+  user users [not null]
+
+  indexes {
+    (workspaceId, userId) [unique]
+  }
+}
+
+Table workspace_invitations {
+  id String [pk]
+  workspaceId String [not null]
+  invitedBy String [not null]
+  email String [not null]
+  role String [not null, default: 'editor']
+  token String [unique, not null]
+  status String [not null, default: 'pending']
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  workspace workspaces [not null]
+}
+
+Table projects {
+  id String [pk]
+  workspaceId String [not null]
+  name String [not null]
+  description String
+  dialect String [not null, default: 'postgresql']
+  isArchived Boolean [not null, default: false]
+  isPublic Boolean [not null, default: false]
+  createdBy String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  workspace workspaces [not null]
+  creator users [not null]
+  schema schemas
+  versions versions [not null]
+  comments comments [not null]
+  activityLogs activity_logs [not null]
+  aiGenerations ai_generations [not null]
+}
+
+Table schemas {
+  id String [pk]
+  projectId String [unique, not null]
+  canvasState Json [not null, default: '{}']
+  updatedBy String
+  updatedAt DateTime [not null]
+  project projects [not null]
+  tables schema_tables [not null]
+}
+
+Table schema_tables {
+  id String [pk]
+  schemaId String [not null]
+  name String [not null]
+  color String
+  positionX Float [not null, default: 0]
+  positionY Float [not null, default: 0]
+  createdAt DateTime [default: `now()`, not null]
+  schema schemas [not null]
+  columns schema_columns [not null]
+
+  indexes {
+    (schemaId, name) [unique]
+  }
+}
+
+Table schema_columns {
+  id String [pk]
+  tableId String [not null]
+  name String [not null]
+  dataType String [not null]
+  isNullable Boolean [not null, default: true]
+  isPrimaryKey Boolean [not null, default: false]
+  isUnique Boolean [not null, default: false]
+  defaultValue String
+  checkExpr String
+  sortOrder Int [not null, default: 0]
+  table schema_tables [not null]
+
+  indexes {
+    (tableId, name) [unique]
+  }
+}
+
+Table versions {
+  id String [pk]
+  projectId String [not null]
+  label String
+  description String
+  canvasState Json [not null, default: '{}']
+  createdBy String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  isAuto Boolean [not null, default: false]
+  project projects [not null]
+}
+
+Table comments {
+  id String [pk]
+  projectId String [not null]
+  parentId String
+  targetType String [not null]
+  targetId String
+  body String [not null]
+  isResolved Boolean [not null, default: false]
+  createdBy String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  project projects [not null]
+  author users [not null]
+  parent comments
+  replies comments [not null]
+}
+
+Table activity_logs {
+  id String [pk]
+  projectId String
+  workspaceId String
+  actorId String [not null]
+  action String [not null]
+  targetType String
+  targetId String
+  metadata Json [not null, default: '{}']
+  createdAt DateTime [default: `now()`, not null]
+  project projects
+  workspace workspaces
+  actor users [not null]
+}
+
+Table ai_generations {
+  id String [pk]
+  projectId String
+  userId String [not null]
+  prompt String [not null]
+  result Json [default: '{}']
+  status String [not null, default: 'pending']
+  tokensUsed Int
+  createdAt DateTime [default: `now()`, not null]
+  project projects
+  user users [not null]
+}
+
+Table notifications {
+  id String [pk]
+  userId String [not null]
+  type String [not null]
+  title String [not null]
+  body String
+  isRead Boolean [not null, default: false]
+  metadata Json [not null, default: '{}']
+  createdAt DateTime [default: `now()`, not null]
+  user users [not null]
+}
+
+Ref: workspaces.ownerId > users.id
+
+Ref: workspace_members.workspaceId > workspaces.id [delete: Cascade]
+
+Ref: workspace_members.userId > users.id [delete: Cascade]
+
+Ref: workspace_invitations.workspaceId > workspaces.id [delete: Cascade]
+
+Ref: projects.workspaceId > workspaces.id [delete: Cascade]
+
+Ref: projects.createdBy > users.id
+
+Ref: schemas.projectId - projects.id [delete: Cascade]
+
+Ref: schema_tables.schemaId > schemas.id [delete: Cascade]
+
+Ref: schema_columns.tableId > schema_tables.id [delete: Cascade]
+
+Ref: versions.projectId > projects.id [delete: Cascade]
+
+Ref: comments.projectId > projects.id [delete: Cascade]
+
+Ref: comments.createdBy > users.id
+
+Ref: comments.parentId - comments.id
+
+Ref: activity_logs.projectId > projects.id [delete: Set Null]
+
+Ref: activity_logs.workspaceId > workspaces.id [delete: Set Null]
+
+Ref: activity_logs.actorId > users.id
+
+Ref: ai_generations.projectId > projects.id [delete: Set Null]
+
+Ref: ai_generations.userId > users.id
+
+Ref: notifications.userId > users.id [delete: Cascade]

@@ -1,22 +1,4 @@
 import 'dotenv/config';
-import path from 'path';
-import fs from 'fs';
-
-console.log('DEBUG: CWD is:', process.cwd());
-const envPath = path.resolve(process.cwd(), '.env');
-console.log('DEBUG: Expected .env path:', envPath);
-console.log('DEBUG: Does .env exist?', fs.existsSync(envPath));
-if (fs.existsSync(envPath)) {
-  const content = fs.readFileSync(envPath, 'utf8');
-  console.log('DEBUG: .env content lines:', content.split('\n').length);
-  // Safely print keys found in .env (without printing values)
-  const keys = content.split('\n')
-    .map(line => line.trim())
-    .filter(line => line && !line.startsWith('#'))
-    .map(line => line.split('=')[0]);
-  console.log('DEBUG: Keys in .env:', keys);
-}
-
 import { z } from 'zod';
 
 const envSchema = z.object({

@@ -2,8 +2,6 @@
 # This file starts PostgreSQL and Redis databases locally for development.
 # The API service configuration is commented out for now since it is run locally.
 
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine

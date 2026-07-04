@@ -10,7 +10,8 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@prisma/client": ["./src/generated/prisma"]
     },
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true

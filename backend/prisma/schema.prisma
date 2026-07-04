@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+  output   = "./schema.dbml"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  passwordHash     String?
+  displayName      String
+  avatarUrl        String?
+  isVerified       Boolean   @default(false)
+  authProvider     String    @default("local")
+  providerId       String?
+  plan             String    @default("free")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  lastLoginAt      DateTime?
+
+  ownedWorkspaces  Workspace[]       @relation("WorkspaceOwner")
+  memberships      WorkspaceMember[]
+  createdProjects  Project[]         @relation("ProjectCreator")
+  comments         Comment[]
+  activityLogs     ActivityLog[]
+  aiGenerations    AiGeneration[]
+  notifications    Notification[]
+
+  @@map("users")
+}
+
+model Workspace {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  avatarUrl   String?
+  ownerId     String
+  plan        String   @default("free")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner        User                  @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  members      WorkspaceMember[]
+  projects     Project[]
+  invitations  WorkspaceInvitation[]
+  activityLogs ActivityLog[]
+
+  @@index([ownerId])
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String   @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        String   @default("editor")
+  joinedAt    DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+  @@map("workspace_members")
+}
+
+model WorkspaceInvitation {
+  id          String   @id @default(uuid())
+  workspaceId String
+  invitedBy   String
+  email       String
+  role        String   @default("editor")
+  token       String   @unique
+  status      String   @default("pending")
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("workspace_invitations")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  workspaceId String
+  name        String
+  description String?
+  dialect     String   @default("postgresql")
+  isArchived  Boolean  @default(false)
+  isPublic    Boolean  @default(false)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  creator       User           @relation("ProjectCreator", fields: [createdBy], references: [id])
+  schema        Schema?
+  versions      Version[]
+  comments      Comment[]
+  activityLogs  ActivityLog[]
+  aiGenerations AiGeneration[]
+
+  @@index([workspaceId, updatedAt(sort: Desc)])
+  @@index([createdBy])
+  @@map("projects")
+}
+
+model Schema {
+  id          String   @id @default(uuid())
+  projectId   String   @unique
+  canvasState Json     @default("{}")
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tables  SchemaTable[]
+
+  @@map("schemas")
+}
+
+model SchemaTable {
+  id        String   @id @default(uuid())
+  schemaId  String
+  name      String
+  color     String?
+  positionX Float    @default(0)
+  positionY Float    @default(0)
+  createdAt DateTime @default(now())
+
+  schema  Schema         @relation(fields: [schemaId], references: [id], onDelete: Cascade)
+  columns SchemaColumn[]
+
+  @@unique([schemaId, name])
+  @@index([schemaId])
+  @@map("schema_tables")
+}
+
+model SchemaColumn {
+  id           String  @id @default(uuid())
+  tableId      String
+  name         String
+  dataType     String
+  isNullable   Boolean @default(true)
+  isPrimaryKey Boolean @default(false)
+  isUnique     Boolean @default(false)
+  defaultValue String?
+  checkExpr    String?
+  sortOrder    Int     @default(0)
+
+  table SchemaTable @relation(fields: [tableId], references: [id], onDelete: Cascade)
+
+  @@unique([tableId, name])
+  @@index([tableId])
+  @@map("schema_columns")
+}
+
+model Version {
+  id          String   @id @default(uuid())
+  projectId   String
+  label       String?
+  description String?
+  // @default("{}") prevents null read errors when canvasState is accessed before a save occurs
+  canvasState Json     @default("{}")
+  createdBy   String
+  createdAt   DateTime @default(now())
+  isAuto      Boolean  @default(false)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt(sort: Desc)])
+  @@map("versions")
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  projectId  String
+  parentId   String?
+  targetType String
+  targetId   String?
+  body       String
+  isResolved Boolean  @default(false)
+  createdBy  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author  User      @relation(fields: [createdBy], references: [id])
+  // Both sides of the self-relation must carry the same @relation("Thread") name
+  parent  Comment?  @relation("Thread", fields: [parentId], references: [id])
+  replies Comment[] @relation("Thread")
+
+  @@index([parentId])
+  @@index([createdBy])
+  // Composite replaces the plain [projectId] index — covers both filtering and time-sorting
+  @@index([projectId, createdAt(sort: Asc)])
+  // Composite replaces [targetType, targetId] — inline comments need chronological order
+  @@index([targetType, targetId, createdAt(sort: Asc)])
+  @@map("comments")
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  projectId   String?
+  workspaceId String?
+  actorId     String
+  action      String
+  targetType  String?
+  targetId    String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+
+  // SetNull (not Cascade) — keep audit logs even when the project or workspace is deleted
+  project   Project?   @relation(fields: [projectId],   references: [id], onDelete: SetNull)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  actor     User       @relation(fields: [actorId],     references: [id])
+
+  @@index([projectId,   createdAt(sort: Desc)])
+  @@index([workspaceId, createdAt(sort: Desc)])
+  // Supports "show all actions taken by this user" queries
+  @@index([actorId,     createdAt(sort: Desc)])
+  @@map("activity_logs")
+}
+
+model AiGeneration {
+  id         String   @id @default(uuid())
+  projectId  String?
+  userId     String
+  prompt     String
+  // @default("{}") on nullable Json avoids needing null checks when reading result
+  result     Json?    @default("{}")
+  status     String   @default("pending")
+  tokensUsed Int?
+  createdAt  DateTime @default(now())
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  user    User     @relation(fields: [userId],    references: [id])
+
+  @@index([userId,     createdAt(sort: Desc)])
+  // Supports "show all AI generations for this project" queries
+  @@index([projectId,  createdAt(sort: Desc)])
+  @@map("ai_generations")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  body      String?
+  isRead    Boolean  @default(false)
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt(sort: Desc)])
+  @@map("notifications")
+}
