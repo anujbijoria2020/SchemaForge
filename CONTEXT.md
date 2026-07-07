@@ -51,3 +51,27 @@ schemaforge/
 - Check health: `curl -s http://localhost:4000/api/health`
 - Generate Prisma Client & DBML: `cd backend && npx prisma generate`
 - Apply migrations: `cd backend && npx prisma migrate dev`
+
+## Database (Day 2 Complete)
+Prisma 5 + PostgreSQL 16
+13 models migrated: User, Workspace, WorkspaceMember, WorkspaceInvitation,
+  Project, Schema, SchemaTable, SchemaColumn, Version,
+  Comment, ActivityLog, AiGeneration, Notification
+ 
+Key decisions:
+- canvas_state: JSONB on Schema (fast R/W) + normalised SchemaTable/Column (for diff engine)
+- ActivityLog onDelete: SetNull (keep logs when project/workspace deleted)
+- All IDs: String @default(uuid()) — no auto-increment integers
+- All tables: @@map('snake_case') — table names are snake_case in PostgreSQL
+ 
+Migration: prisma/migrations/TIMESTAMP_init/migration.sql
+Seed: npx prisma db seed (creates 2 users, 2 workspaces, 3 projects)
+Studio: npx prisma studio (http://localhost:5555)
+ 
+## Day 3 Plan
+JWT authentication: register, login, refresh, logout, /me endpoint
+Files to create: auth.dto.ts, auth.repository.ts, auth.service.ts,
+  auth.controller.ts, auth.routes.ts, authenticate.ts middleware, errorHandler.ts
+ 
+
+

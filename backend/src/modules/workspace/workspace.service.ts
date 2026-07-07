@@ -93,7 +93,7 @@ export class WorkspaceService {
       throw new ApiError(400, 'Cannot remove the owner of the workspace');
     }
 
-    return this.workspaceRepository.removeMember(workspaceId, userId);
+    return this.workspaceRepository.removeMember(workspaceId, member.userId);
   }
 
   async updateMemberRole(workspaceId: string, userId: string, data: UpdateMemberRoleDto) {
@@ -106,7 +106,7 @@ export class WorkspaceService {
       throw new ApiError(400, 'Cannot modify the owner role');
     }
 
-    return this.workspaceRepository.updateMemberRole(workspaceId, userId, data.role);
+    return this.workspaceRepository.updateMemberRole(workspaceId, member.userId, data.role);
   }
 
   // --- Invitations ---

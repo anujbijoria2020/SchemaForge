@@ -123,12 +123,28 @@ export class WorkspaceRepository {
     });
   }
 
-  async findMember(workspaceId: string, userId: string): Promise<WorkspaceMember | null> {
+  async findMember(workspaceId: string, userIdOrMemberId: string): Promise<WorkspaceMember | null> {
+    const isUuid = (val: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+    
+    if (!isUuid(userIdOrMemberId)) {
+      return null;
+    }
+
+    // 1. Try to find by primary key (WorkspaceMember ID)
+    const memberById = await prisma.workspaceMember.findUnique({
+      where: { id: userIdOrMemberId },
+    });
+
+    if (memberById && memberById.workspaceId === workspaceId) {
+      return memberById;
+    }
+
+    // 2. Fallback to finding by workspaceId and userId (User ID)
     return prisma.workspaceMember.findUnique({
       where: {
         workspaceId_userId: {
           workspaceId,
-          userId,
+          userId: userIdOrMemberId,
         },
       },
     });
