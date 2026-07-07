@@ -4,6 +4,12 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { env } from '@/config/env';
+import authRoutes from '@/modules/auth/auth.routes';
+import workspaceRoutes from '@/modules/workspace/workspace.routes';
+import projectRoutes from '@/modules/project/project.routes';
+import versionRoutes from '@/modules/version/version.routes';
+import { errorHandler } from './middlewares/errorHandler.middleware';
+
 
 const app = express();
 
@@ -39,5 +45,20 @@ app.get('/api/health', (req, res) => {
     version: '1.0.0',
   });
 });
+
+// Mount auth routes
+app.use('/api/auth', authRoutes);
+
+// Mount workspace routes
+app.use('/api/workspaces', workspaceRoutes);
+
+// Mount project routes
+app.use('/api', projectRoutes);
+
+// Mount version routes
+app.use('/api/projects', versionRoutes);
+
+// Global Error Handler
+app.use(errorHandler);
 
 export default app;
