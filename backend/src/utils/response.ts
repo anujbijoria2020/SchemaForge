@@ -1,13 +1,13 @@
 import { Response } from 'express';
 
-export interface Pagination {
+interface Pagination {
     total: number;
     page: number;
     limit: number;
     pages: number;
 }
 
-export interface SuccessBody<T> {
+interface SuccessBody<T> {
     success: true;
     data: T;
     pagination?: Pagination;
@@ -57,6 +57,13 @@ export function paginatedResponse<T>(
     return res.status(200).json(body);
 }
 
+export interface ErrorBody {
+    success: false;
+    message: string;
+    errors?: any[];
+    stack?: string;
+}
+
 /**
  * Sends a structured standard error API response.
  * 
@@ -66,17 +73,21 @@ export function paginatedResponse<T>(
  * @param errors Optional array of error details (validation issues, etc)
  * @param stack Optional stack trace for development mode
  */
-export const sendError = (
-  res: Response,
-  message: string,
-  statusCode = 500,
-  errors: any[] = [],
-  stack?: string
-): Response => {
-  return res.status(statusCode).json({
-    status: 'error',
-    message,
-    ...(errors && errors.length > 0 ? { errors } : {}),
-    ...(stack ? { stack } : {}),
-  });
-};
+export function errorResponse(
+    res: Response,
+    message: string,
+    statusCode = 500,
+    errors: any[] = [],
+    stack?: string
+): Response {
+    const body: ErrorBody = {
+        success: false,
+        message,
+        ...(errors && errors.length > 0 ? { errors } : {}),
+        ...(stack ? { stack } : {}),
+    };
+    return res.status(statusCode).json(body);
+}
+
+// Keep sendError as alias for backward compatibility
+export const sendError = errorResponse;

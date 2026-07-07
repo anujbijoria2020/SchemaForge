@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '@/utils/ApiError';
 import { env } from '@/config/env';
-import { sendError } from '@/utils/response';
+import { errorResponse } from '@/utils/response';
 
 export const errorHandler = (
   err: Error,
@@ -22,5 +22,5 @@ export const errorHandler = (
   }
 
   const stack = env.NODE_ENV === 'development' ? err.stack : undefined;
-  sendError(res, message, statusCode, errors, stack);
+  errorResponse(res, message, statusCode, errors, stack);
 };
