@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+@theme {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-border-subtle: var(--border);
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
+  
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  
+  --radius-sm: var(--radius);
+
+  --animate-dialog-overlay: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialog-content: dialogContentShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  
+  --animate-toast-show: toastShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-toast-hide: toastHide 100ms ease-in;
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogContentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes toastShow {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastHide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+:root {
+  --background: #080B14;
+  --surface: #0F1420;
+  --border: #1E293B;
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --destructive: #EF4444;
+  --destructive-hover: #DC2626;
+  --radius: 4px;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+.light {
+  --background: #FFFFFF;
+  --surface: #F8FAFC;
+  --border: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --destructive: #EF4444;
+  --destructive-hover: #DC2626;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
