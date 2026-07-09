@@ -1,9 +1,13 @@
 {
     "name": "SchemaForge",
-    "private":"true",
-    "workspaces":["frontend","backend","packages/**"],
+    "private": "true",
+    "workspaces": [
+        "frontend",
+        "backend",
+        "packages/**"
+    ],
     "scripts": {
-        "dev:backend":"cd backend && npm run dev",
-        "dev:frontend":"cd frontend && npm run dev"
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && npm run dev"
     }
 }
