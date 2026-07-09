@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
 import { ApiError } from '@/utils/ApiError';
 import { env } from '@/config/env';
 import { errorResponse } from '@/utils/response';
@@ -17,6 +18,13 @@ export const errorHandler = (
     statusCode = err.statusCode;
     message = err.message;
     errors = err.errors;
+  } else if (err instanceof ZodError) {
+    statusCode = 400;
+    message = 'Validation Error';
+    errors = err.errors.map((e) => ({
+      field: e.path.join('.'),
+      message: e.message,
+    }));
   } else if (err instanceof Error) {
     message = err.message;
   }

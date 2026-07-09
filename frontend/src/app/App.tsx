@@ -1,47 +1,57 @@
 import * as React from 'react';
-import { Playground } from './Playground';
+import { RouterProvider } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '../shared/components/ui/Toast';
-import { Sparkles } from 'lucide-react';
+import { router } from './router';
+import { useAuthStore } from '../features/auth/store/authStore';
+import { apiRequest } from '../shared/lib/api-client';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 function App() {
-  const [path, setPath] = React.useState(window.location.pathname);
+  const setUser = useAuthStore((state) => state.setUser);
+  const setInitializing = useAuthStore((state) => state.setInitializing);
 
   React.useEffect(() => {
-    const handleLocationChange = () => {
-      setPath(window.location.pathname);
+    const initializeAuth = async () => {
+      try {
+        // 1. Try to refresh the token using cookie first
+        const refreshRes = await apiRequest<{ data: { accessToken: string } }>('/auth/refresh', {
+          method: 'POST',
+        });
+        const accessToken = refreshRes.data.accessToken;
+
+        // 2. Fetch current user data using the new token
+        const meRes = await apiRequest<{ data: { user: { id: string; email: string; displayName: string } } }>('/auth/me', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        // 3. Set the authenticated state
+        setUser(meRes.data.user, accessToken);
+      } catch (err) {
+        // If anything fails, user is not authenticated
+        setUser(null, null);
+      } finally {
+        setInitializing(false);
+      }
     };
 
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
+    initializeAuth();
+  }, [setUser, setInitializing]);
 
   return (
-    <ToastProvider>
-      {path === '/playground' ? (
-        <Playground />
-      ) : (
-        <div className="flex min-h-screen items-center justify-center bg-background text-primary font-sans flex-col gap-6">
-          <div className="h-16 w-16 bg-accent rounded-sm flex items-center justify-center shadow-lg shadow-accent/20">
-            <Sparkles className="h-8 w-8 text-white animate-pulse" />
-          </div>
-          <div className="text-center flex flex-col gap-2">
-            <h1 className="text-4xl font-extrabold tracking-tight text-primary">SchemaForge</h1>
-            <p className="text-secondary text-sm font-medium">Collaborative Database Schema Design & Modeling Tool</p>
-          </div>
-          <a
-            href="/playground"
-            onClick={(e) => {
-              e.preventDefault();
-              window.history.pushState({}, '', '/playground');
-              setPath('/playground');
-            }}
-            className="mt-4 px-6 py-2.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-sm shadow-md shadow-accent/10 transition-colors duration-200"
-          >
-            Launch UI Design Playground
-          </a>
-        </div>
-      )}
-    </ToastProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastProvider>
+        <RouterProvider router={router} />
+      </ToastProvider>
+    </QueryClientProvider>
   );
 }
 
