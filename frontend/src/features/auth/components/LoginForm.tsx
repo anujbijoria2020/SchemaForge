@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../../../shared/components/ui/Button';
 import { Input } from '../../../shared/components/ui/Input';
 import { useToast } from '../../../shared/components/ui/Toast';
@@ -19,8 +19,11 @@ type LoginFormData = z.infer<typeof loginFormSchema>;
 export const LoginForm: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { mutate: login, isPending } = useLoginMutation();
 
+  const redirectTo = searchParams.get('redirectTo') || '/app';
+  
   const {
     register,
     handleSubmit,
@@ -38,8 +41,9 @@ export const LoginForm: React.FC = () => {
     login(data, {
       onSuccess: () => {
         toast('Logged in successfully!', { variant: 'success' });
-        navigate('/app');
+        navigate(redirectTo);
       },
+
       onError: (err) => {
         if (err instanceof ApiError) {
           if (err.errors && Array.isArray(err.errors)) {

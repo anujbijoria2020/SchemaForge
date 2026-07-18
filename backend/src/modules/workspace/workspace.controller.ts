@@ -146,3 +146,13 @@ export const revokeInvitation = asyncHandler(async (req: Request, res: Response)
 
   return noContentResponse(res);
 });
+
+export const getMyInvitations = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user?.email) {
+    throw new ApiError(401, 'Unauthorized');
+  }
+
+  const invitations = await workspaceService.getPendingInvitationsForEmail(req.user.email);
+
+  return successResponse(res, { invitations });
+});

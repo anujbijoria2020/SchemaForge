@@ -221,4 +221,8 @@ export class WorkspaceService {
 
     return this.workspaceRepository.updateInvitationStatus(invitation.id, 'revoked');
   }
+
+  async getPendingInvitationsForEmail(email: string) {
+    return this.workspaceRepository.findPendingInvitationsByEmail(email);
+  }
 }

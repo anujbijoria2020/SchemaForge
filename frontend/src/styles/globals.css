@@ -1,6 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 
 @theme {
   --color-background: var(--background);
@@ -12,15 +12,15 @@
   --color-accent-hover: var(--accent-hover);
   --color-destructive: var(--destructive);
   --color-destructive-hover: var(--destructive-hover);
-  
+
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  
+
   --radius-sm: var(--radius);
 
   --animate-dialog-overlay: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-dialog-content: dialogContentShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
-  
+
   --animate-toast-show: toastShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-toast-hide: toastHide 100ms ease-in;
 }
@@ -29,6 +29,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -39,6 +40,7 @@
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -50,6 +52,7 @@
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -60,6 +63,7 @@
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }

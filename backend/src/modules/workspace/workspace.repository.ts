@@ -178,9 +178,16 @@ export class WorkspaceRepository {
     });
   }
 
-  async findInvitationByToken(token: string): Promise<WorkspaceInvitation | null> {
+  async findInvitationByToken(token: string) {
     return prisma.workspaceInvitation.findUnique({
       where: { token },
+      include: {
+        workspace: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
   }
 
@@ -219,6 +226,28 @@ export class WorkspaceRepository {
   async deleteInvitation(id: string): Promise<WorkspaceInvitation> {
     return prisma.workspaceInvitation.delete({
       where: { id },
+    });
+  }
+
+  async findPendingInvitationsByEmail(email: string): Promise<WorkspaceInvitation[]> {
+    return prisma.workspaceInvitation.findMany({
+      where: {
+        email,
+        status: 'pending',
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      include: {
+        workspace: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 }
