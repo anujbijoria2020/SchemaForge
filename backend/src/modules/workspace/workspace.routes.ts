@@ -17,6 +17,7 @@ import {
   acceptInvitation,
   rejectInvitation,
   revokeInvitation,
+  getMyInvitations,
 } from './workspace.controller';
 
 const router = Router();
@@ -28,6 +29,7 @@ router.use(requireAuth);
 router.post('/invitations/accept', acceptInvitation);
 router.post('/invitations/reject', rejectInvitation);
 router.get('/invitations/:token', getInvitation);
+router.get('/my-invitations', getMyInvitations);
 
 // --- Workspace CRUD ---
 router.post('/', createWorkspace);
