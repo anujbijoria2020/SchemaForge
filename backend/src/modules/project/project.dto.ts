@@ -12,7 +12,9 @@ export const createProjectSchema = z.object({
   isPublic: z.boolean().default(false),
 });
 
-export const updateProjectSchema = createProjectSchema.partial();
+export const updateProjectSchema = createProjectSchema.partial().extend({
+  isArchived: z.boolean().optional(),
+});
 
 export const schemaColumnSchema = z.object({
   name: z.string({ required_error: 'Column name is required' }).min(1, 'Column name cannot be empty'),

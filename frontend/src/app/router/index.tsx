@@ -6,7 +6,14 @@ import { RegisterPage } from '../../features/auth/pages/RegisterPage';
 import { DashboardPage } from '../../features/workspaces/pages/DashboardPage';
 import { WorkspaceOverviewPage } from '../../features/workspaces/pages/WorkspaceOverviewPage';
 import { MembersPage } from '../../features/workspaces/pages/MembersPage';
+import { WorkspaceSettingsPage } from '../../features/workspaces/pages/WorkspaceSettingsPage';
+import { SettingsLayout } from '../../features/settings/components/SettingsLayout';
+import { ProfilePage } from '../../features/settings/pages/ProfilePage';
+import { AccountPage } from '../../features/settings/pages/AccountPage';
 import { AcceptInvitationPage } from '../../features/workspaces/pages/AcceptInvitationPage';
+import { EditorPage } from '../../features/editor/pages/EditorPage';
+import { VersionHistoryPage } from '../../features/versions/pages/VersionHistoryPage';
+import { NotFoundPage } from '../../shared/components/NotFoundPage';
 import { Playground } from '../Playground';
 
 export const router = createBrowserRouter([
@@ -38,8 +45,42 @@ export const router = createBrowserRouter([
         element: <WorkspaceOverviewPage />,
       },
       {
+        path: 'workspaces/:id/projects',
+        element: <WorkspaceOverviewPage />,
+      },
+      {
         path: 'workspaces/:id/members',
         element: <MembersPage />,
+      },
+      {
+        path: 'workspaces/:id/settings',
+        element: <WorkspaceSettingsPage />,
+      },
+      {
+        path: 'projects/:projectId/editor',
+        element: <EditorPage />,
+      },
+      {
+        path: 'projects/:projectId/versions',
+        element: <VersionHistoryPage />,
+      },
+      {
+        path: 'settings',
+        element: <SettingsLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="profile" replace />,
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
+          },
+          {
+            path: 'account',
+            element: <AccountPage />,
+          },
+        ],
       },
     ],
   },
@@ -61,14 +102,6 @@ export const router = createBrowserRouter([
   // Fallback 404
   {
     path: '*',
-    element: (
-      <div className="flex min-h-screen items-center justify-center bg-background text-primary flex-col gap-4">
-        <h1 className="text-4xl font-extrabold">404</h1>
-        <p className="text-secondary text-sm">Page not found</p>
-        <a href="/app" className="text-accent hover:underline text-sm font-semibold">
-          Go to Dashboard
-        </a>
-      </div>
-    ),
+    element: <NotFoundPage />,
   },
 ]);

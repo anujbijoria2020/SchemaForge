@@ -10,12 +10,15 @@ import { CreateWorkspaceDialog } from '../components/CreateWorkspaceDialog';
 import { apiRequest } from '../../../shared/lib/api-client';
 import { Button } from '../../../shared/components/ui/Button';
 import { useToast } from '../../../shared/components/ui/Toast';
-import { LogOut, Database, Plus, LayoutGrid } from 'lucide-react';
+import { ThemeToggle } from '../../../shared/components/ThemeToggle';
+import { LogOut, Database, Plus, LayoutGrid, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const setActiveWorkspaceId = useWorkspaceStore((state) => state.setActiveWorkspaceId);
+  const navigate = useNavigate();
 
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
 
@@ -99,10 +102,20 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <span className="hidden md:inline text-xs text-secondary font-medium">
+        <div className="flex items-center gap-3">
+          <span className="hidden md:inline text-xs text-secondary font-medium mr-1">
             Logged in as <span className="text-primary font-semibold">{user?.displayName || user?.email}</span>
           </span>
+          <ThemeToggle />
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => navigate('/app/settings/profile')}
+            className="flex items-center gap-2 font-semibold cursor-pointer"
+          >
+            <Settings className="h-3.5 w-3.5 text-accent" />
+            Settings
+          </Button>
           <Button variant="secondary" size="sm" onClick={handleLogout} className="flex items-center gap-2 font-semibold cursor-pointer">
             <LogOut className="h-3.5 w-3.5" />
             Sign Out

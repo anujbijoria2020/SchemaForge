@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Database, FolderArchive, LayoutGrid, Sparkles, Calendar, Plus, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, LayoutGrid, Plus, AlertTriangle } from 'lucide-react';
 import { useWorkspaceStore } from '../store/workspaceStore';
 import { useWorkspace } from '../api/workspaces';
 import { WorkspaceHeader } from '../components/WorkspaceHeader';
 import { Button } from '../../../shared/components/ui/Button';
+import { ProjectGrid } from '../../projects/components/ProjectGrid';
+import { CreateProjectDialog } from '../../projects/components/CreateProjectDialog';
 
 export const WorkspaceOverviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +15,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
   const setActiveWorkspaceId = useWorkspaceStore((state) => state.setActiveWorkspaceId);
 
   const [showArchived, setShowArchived] = React.useState(false);
+  const [isCreateOpen, setIsCreateOpen] = React.useState(false);
 
   // Set active workspace ID when navigating to this workspace
   React.useEffect(() => {
@@ -28,39 +31,6 @@ export const WorkspaceOverviewPage: React.FC = () => {
     error,
     refetch,
   } = useWorkspace(id);
-
-  // Mock static projects since CRUD is out of scope
-  const mockProjects = [
-    {
-      id: 'proj-acme-1',
-      name: 'User Management DB',
-      description: 'Central users database containing profiles, oauth credentials, and permission matrices.',
-      dialect: 'postgresql',
-      createdAt: '2026-05-12',
-      tableCount: 14,
-      isArchived: false,
-    },
-    {
-      id: 'proj-acme-2',
-      name: 'Analytics Warehouse',
-      description: 'OLAP data warehouse tracking site telemetry, purchase events, and session stats.',
-      dialect: 'postgresql',
-      createdAt: '2026-06-01',
-      tableCount: 29,
-      isArchived: false,
-    },
-    {
-      id: 'proj-acme-archived',
-      name: 'Legacy Billing Engine',
-      description: 'Archived legacy billing structures. Replaced by Stripe billing service.',
-      dialect: 'mysql',
-      createdAt: '2025-01-10',
-      tableCount: 8,
-      isArchived: true,
-    },
-  ];
-
-  const filteredProjects = mockProjects.filter((p) => !p.isArchived || showArchived);
 
   // Loading skeleton matching layout exactly
   if (isLoading) {
@@ -172,76 +142,35 @@ export const WorkspaceOverviewPage: React.FC = () => {
               Database Schemas
             </h2>
           </div>
-          <Button variant="secondary" size="sm" className="cursor-not-allowed opacity-60 flex items-center gap-1">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setIsCreateOpen(true)}
+            className="flex items-center gap-1 font-semibold shadow-md"
+          >
             <Plus className="h-3.5 w-3.5" />
             New Project
           </Button>
         </div>
 
         {/* Project cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              className={`group flex flex-col justify-between rounded-sm border p-6 h-44 shadow-md bg-surface transition-all duration-200 ${
-                project.isArchived
-                  ? 'border-dashed border-border-subtle bg-surface/40 opacity-70'
-                  : 'border-border-subtle hover:border-accent/40'
-              }`}
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h3 className={`text-md font-bold truncate transition-colors duration-150 ${
-                    project.isArchived
-                      ? 'text-secondary font-normal'
-                      : 'text-primary group-hover:text-accent'
-                  }`}>
-                    {project.name}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {project.isArchived && (
-                      <span className="text-[9px] font-semibold text-secondary bg-border-subtle border border-border px-1.5 py-0.5 rounded-xs flex items-center gap-1">
-                        <FolderArchive className="h-2.5 w-2.5" />
-                        Archived
-                      </span>
-                    )}
-                    <span className="text-[10px] text-secondary font-mono uppercase tracking-wider bg-border-subtle/50 px-2 py-0.5 rounded-xs border border-border-subtle">
-                      {project.dialect}
-                    </span>
-                  </div>
-                </div>
-                <p className="text-xs text-secondary line-clamp-2 mt-1 leading-relaxed">
-                  {project.description || 'No description provided.'}
-                </p>
-              </div>
-
-              {/* Footer details */}
-              <div className="flex items-center justify-between text-xs text-secondary border-t border-border-subtle/20 pt-4 mt-2">
-                <span className="flex items-center gap-1 text-[11px]">
-                  <Database className="h-3.5 w-3.5 text-accent" />
-                  <span className="font-semibold text-primary">{project.tableCount}</span> tables
-                </span>
-                <span className="text-[11px] flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  Created {new Date(project.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Premium Note */}
-        <div className="flex items-start gap-3 bg-surface/20 border border-border-subtle rounded-sm p-4 text-xs text-secondary leading-relaxed">
-          <Sparkles className="h-5 w-5 text-accent flex-shrink-0 mt-0.5 animate-pulse" />
-          <div>
-            <p className="font-semibold text-primary mb-0.5">Project CRUD coming in the next milestone</p>
-            <p>
-              Designing custom tables, relational wires, and SQL schema projection is planned in Milestone 9+. You are currently viewing static database projections of the {workspace.name} workspace.
-            </p>
-          </div>
-        </div>
+        {id && (
+          <ProjectGrid
+            workspaceId={id}
+            showArchived={showArchived}
+            onCreateClick={() => setIsCreateOpen(true)}
+          />
+        )}
 
       </main>
+
+      {id && (
+        <CreateProjectDialog
+          workspaceId={id}
+          open={isCreateOpen}
+          onOpenChange={setIsCreateOpen}
+        />
+      )}
     </div>
   );
 };
