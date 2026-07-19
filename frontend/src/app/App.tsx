@@ -5,6 +5,8 @@ import { ToastProvider } from '../shared/components/ui/Toast';
 import { router } from './router';
 import { useAuthStore } from '../features/auth/store/authStore';
 import { apiRequest } from '../shared/lib/api-client';
+import { ErrorBoundary } from './providers/ErrorBoundary';
+import { ThemeProvider } from './providers/ThemeProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,11 +49,15 @@ function App() {
   }, [setUser, setInitializing]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <RouterProvider router={router} />
-      </ToastProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
