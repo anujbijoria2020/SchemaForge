@@ -99,7 +99,7 @@ export const AcceptInvitationPage: React.FC = () => {
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-primary">SchemaForge</h1>
           <p className="text-secondary text-xs mt-1 font-medium tracking-wide uppercase">
-            by Vednix Technology
+            by Anuj Patel
           </p>
         </div>
 
@@ -115,8 +115,8 @@ export const AcceptInvitationPage: React.FC = () => {
                   {isInitializing
                     ? 'Checking your session...'
                     : isInvitationLoading
-                    ? 'Loading invitation details...'
-                    : 'Joining workspace...'}
+                      ? 'Loading invitation details...'
+                      : 'Joining workspace...'}
                 </p>
               </div>
             </div>

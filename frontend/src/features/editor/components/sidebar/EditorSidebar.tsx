@@ -57,17 +57,17 @@ export const EditorSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-64 border-r border-border bg-surface flex flex-col h-full select-none flex-shrink-0 z-20">
+    <aside className="w-64 border-r border-border-subtle bg-surface flex flex-col h-full select-none flex-shrink-0 z-20">
       {/* Sidebar Header: Section Title */}
       <div className="p-4 border-b border-border/60 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-secondary uppercase tracking-wider">Schema Outline</span>
-          <span className="text-[10px] font-mono font-bold bg-white/5 border border-border px-1.5 py-0.5 rounded-sm text-secondary">
+          <span className="text-[10px] font-mono font-bold bg-white/5 border border-border-subtle px-1.5 py-0.5 rounded-full text-secondary">
             {tables.length}
           </span>
         </div>
         <button
-          className="h-6 w-6 rounded-sm text-secondary hover:text-primary hover:bg-white/5 transition-all flex items-center justify-center cursor-pointer border border-transparent active:border-border"
+          className="h-6 w-6 rounded-lg text-secondary hover:text-primary hover:bg-white/5 transition-all flex items-center justify-center cursor-pointer border border-transparent active:border-border-subtle"
           title="Filter Outline"
         >
           <ListFilter className="h-3.5 w-3.5" />
@@ -83,7 +83,7 @@ export const EditorSidebar: React.FC = () => {
             placeholder="Search tables..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-background/50 text-xs text-primary placeholder:text-secondary/50 border border-border/80 rounded-sm pl-8 pr-3 py-2 outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 transition-all font-sans"
+            className="w-full bg-background/50 text-xs text-primary placeholder:text-secondary/50 border border-border-subtle/80 rounded-lg pl-8 pr-3 py-2 outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 transition-all font-sans"
           />
         </div>
       </div>
@@ -97,7 +97,7 @@ export const EditorSidebar: React.FC = () => {
               <div
                 key={table.id}
                 onClick={() => handleTableClick(table.id)}
-                className={`group flex items-center justify-between px-2.5 py-1.5 rounded-sm cursor-pointer transition-all duration-150 ${isSelected
+                className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg cursor-pointer transition-all duration-150 ${isSelected
                   ? 'bg-accent/15 border border-accent/35 text-primary'
                   : 'border border-transparent text-secondary hover:text-primary hover:bg-white/5'
                   }`}
@@ -122,7 +122,7 @@ export const EditorSidebar: React.FC = () => {
         )}
       </div>
       {/* Templates Section */}
-      <div className="border-t border-border bg-background/30 shrink-0">
+      <div className="border-t border-border-subtle bg-background/30 shrink-0">
 
         {/* Header */}
         <button
@@ -202,7 +202,7 @@ export const EditorSidebar: React.FC = () => {
               items-start
               rounded-lg
               border
-              border-border/70
+              border-border-subtle/70
               bg-surface
               p-3
               text-left

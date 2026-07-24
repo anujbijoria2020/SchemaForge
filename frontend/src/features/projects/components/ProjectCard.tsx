@@ -65,16 +65,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`group flex flex-col justify-between rounded-sm border p-6 h-44 shadow-md bg-surface transition-all duration-200 cursor-pointer relative overflow-visible ${
+      className={`group flex flex-col justify-between rounded-xl border p-5 h-auto shadow-md bg-surface transition-all duration-200 cursor-pointer relative overflow-visible ${
         project.isArchived
-          ? 'border-dashed border-border-subtle bg-surface/40 opacity-70 hover:opacity-100 hover:border-border'
-          : 'border-border-subtle hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5'
+          ? 'border-dashed border-border-subtle bg-surface/40 opacity-70 hover:opacity-100 hover:border-border-subtle'
+          : 'border-border-subtle hover:border-accent/40 hover:shadow-lg hover:shadow-black/20'
       }`}
     >
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-4">
           <h3
-            className={`text-md font-bold truncate transition-colors duration-150 flex-1 ${
+            className={`text-md font-bold truncate transition-colors duration-150 flex-1 text-left ${
               project.isArchived
                 ? 'text-secondary font-normal'
                 : 'text-primary group-hover:text-accent'
@@ -84,13 +84,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </h3>
           <div className="flex items-center gap-2 stop-propagation">
             {project.isArchived && (
-              <span className="text-[9px] font-semibold text-secondary bg-border-subtle border border-border px-1.5 py-0.5 rounded-xs flex items-center gap-1">
+              <span className="text-[9px] font-semibold text-secondary bg-border-subtle border border-border-subtle px-1.5 py-0.5 rounded-full flex items-center gap-1">
                 <FolderArchive className="h-2.5 w-2.5" />
                 Archived
               </span>
             )}
             <span
-              className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-xs border ${getDialectColor(
+              className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${getDialectColor(
                 project.dialect
               )}`}
             >
@@ -105,14 +105,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   setMenuOpen((prev) => !prev);
                 }}
                 disabled={isArchiving}
-                className="p-1 rounded-xs hover:bg-border-subtle/80 text-secondary hover:text-primary transition-colors cursor-pointer"
+                className="p-1 rounded-lg hover:bg-border-subtle/80 text-secondary hover:text-primary transition-colors cursor-pointer"
               >
                 <MoreVertical className="h-4 w-4" />
               </button>
 
               {/* Dropdown Menu */}
               {menuOpen && (
-                <div className="absolute right-0 mt-1 w-40 rounded-sm border border-border bg-elevated shadow-xl z-50 py-1 divide-y divide-border/60">
+                <div className="absolute right-0 mt-1 w-40 rounded-lg border border-border-subtle bg-surface shadow-xl z-50 py-1 divide-y divide-border-subtle/60">
                   <div className="py-1">
                     <button
                       onClick={(e) => {
@@ -120,7 +120,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         setMenuOpen(false);
                         onRename();
                       }}
-                      className="w-full text-left px-3 py-1.5 text-xs text-primary hover:bg-surface hover:text-accent transition-colors flex items-center gap-2 cursor-pointer font-medium"
+                      className="w-full text-left px-3 py-1.5 text-xs text-primary hover:bg-background hover:text-accent transition-colors flex items-center gap-2 cursor-pointer font-medium"
                     >
                       <Edit className="h-3.5 w-3.5" />
                       Rename Project
@@ -131,7 +131,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         setMenuOpen(false);
                         onArchive(!project.isArchived);
                       }}
-                      className="w-full text-left px-3 py-1.5 text-xs text-primary hover:bg-surface hover:text-accent transition-colors flex items-center gap-2 cursor-pointer font-medium"
+                      className="w-full text-left px-3 py-1.5 text-xs text-primary hover:bg-background hover:text-accent transition-colors flex items-center gap-2 cursor-pointer font-medium"
                     >
                       {project.isArchived ? (
                         <>
@@ -164,13 +164,38 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </div>
           </div>
         </div>
-        <p className="text-xs text-secondary line-clamp-2 mt-1 leading-relaxed">
+        <p className="text-xs text-secondary line-clamp-2 mt-1 leading-relaxed text-left">
           {project.description || 'No description provided.'}
         </p>
       </div>
 
+      {/* Mini schema canvas preview */}
+      <div className="h-24 bg-background border border-border-subtle rounded-lg mt-3 flex items-center justify-center gap-3 relative overflow-hidden select-none">
+        {/* Dot pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(#1E293B_1px,transparent_1px)] bg-[size:8px_8px] opacity-40" />
+        
+        {/* Table 1 */}
+        <div className="z-10 bg-surface border border-border-subtle rounded p-1 w-16 text-[7px] text-left">
+          <div className="font-bold border-b border-border-subtle pb-0.5 mb-0.5 text-primary font-mono truncate">users</div>
+          <div className="text-secondary font-mono">id</div>
+          <div className="text-secondary font-mono">email</div>
+        </div>
+
+        {/* Connector line (SVG) */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+          <path d="M 115 48 L 140 48" stroke="var(--accent)" strokeWidth="1" strokeDasharray="2,2" />
+        </svg>
+
+        {/* Table 2 */}
+        <div className="z-10 bg-surface border border-border-subtle rounded p-1 w-16 text-[7px] text-left">
+          <div className="font-bold border-b border-border-subtle pb-0.5 mb-0.5 text-primary font-mono truncate font-semibold">orders</div>
+          <div className="text-accent font-mono font-semibold">user_id</div>
+          <div className="text-secondary font-mono">total</div>
+        </div>
+      </div>
+
       {/* Footer details */}
-      <div className="flex items-center justify-between text-xs text-secondary border-t border-border-subtle/20 pt-4 mt-2">
+      <div className="flex items-center justify-between text-xs text-secondary border-t border-border-subtle/20 pt-4 mt-3">
         <span className="flex items-center gap-1.5 text-[11px]">
           <Database className="h-3.5 w-3.5 text-accent" />
           <span className="font-semibold text-primary">{project.tableCount ?? 0}</span> tables

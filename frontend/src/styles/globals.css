@@ -12,11 +12,18 @@
   --color-accent-hover: var(--accent-hover);
   --color-destructive: var(--destructive);
   --color-destructive-hover: var(--destructive-hover);
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-purple: #8B5CF6;
+  --color-placeholder: #64748B;
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
   --radius-sm: var(--radius);
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
 
   --animate-dialog-overlay: overlayShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-dialog-content: dialogContentShow 120ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -79,14 +86,14 @@
   --accent-hover: #1D4ED8;
   --destructive: #EF4444;
   --destructive-hover: #DC2626;
-  --radius: 4px;
+  --radius: 8px;
   --font-sans: "DM Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
 .light {
-  --background: #FFFFFF;
-  --surface: #F8FAFC;
+  --background: #F8FAFC;
+  --surface: #FFFFFF;
   --border: #E2E8F0;
   --text-primary: #0F172A;
   --text-secondary: #475569;

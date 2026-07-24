@@ -27,7 +27,7 @@ export const WorkspaceGrid: React.FC<WorkspaceGridProps> = ({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3].map((n) => (
-          <div key={n} className="rounded-sm border border-border-subtle bg-surface/50 h-40 p-6 flex flex-col justify-between animate-pulse">
+          <div key={n} className="rounded-xl border border-border-subtle bg-surface/50 h-40 p-6 flex flex-col justify-between animate-pulse">
             <div className="space-y-3">
               <div className="h-6 w-2/3 bg-border rounded-xs" />
               <div className="h-4 w-5/6 bg-border rounded-xs" />
@@ -45,7 +45,7 @@ export const WorkspaceGrid: React.FC<WorkspaceGridProps> = ({
     return (
       <Card className="border-destructive/30 bg-surface/50 max-w-2xl mx-auto my-8">
         <CardHeader className="flex flex-row items-center gap-4">
-          <div className="h-10 w-10 bg-destructive/10 rounded-sm flex items-center justify-center">
+          <div className="h-10 w-10 bg-destructive/10 rounded-lg flex items-center justify-center">
             <AlertTriangle className="h-5 w-5 text-destructive" />
           </div>
           <div>
@@ -72,7 +72,7 @@ export const WorkspaceGrid: React.FC<WorkspaceGridProps> = ({
   // Empty state first-run CTA
   if (!workspaces || workspaces.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center p-12 border border-dashed border-border-subtle rounded-sm bg-surface/20 max-w-2xl mx-auto my-8 space-y-6">
+      <div className="flex flex-col items-center justify-center text-center p-12 border border-dashed border-border-subtle rounded-xl bg-surface/20 max-w-2xl mx-auto my-8 space-y-6">
         <div className="h-16 w-16 bg-accent/5 rounded-full flex items-center justify-center border border-accent/15">
           <Folder className="h-8 w-8 text-accent" />
         </div>
@@ -97,7 +97,7 @@ export const WorkspaceGrid: React.FC<WorkspaceGridProps> = ({
         <Link
           key={workspace.id}
           to={`/app/workspaces/${workspace.id}`}
-          className="group block rounded-sm border border-border-subtle bg-surface hover:border-accent/40 transition-all duration-200 shadow-md p-6 h-40 flex flex-col justify-between"
+          className="group block rounded-xl border border-border-subtle bg-surface hover:border-accent/40 transition-all duration-200 shadow-md p-6 h-45 flex flex-col justify-between"
         >
           <div className="space-y-2">
             <h3 className="text-md font-bold text-primary group-hover:text-accent transition-colors duration-150 truncate">
@@ -106,7 +106,7 @@ export const WorkspaceGrid: React.FC<WorkspaceGridProps> = ({
             <p className="text-xs text-secondary line-clamp-2 mt-1">
               {workspace.description || 'No description provided.'}
             </p>
-            <span className="inline-block text-[10px] text-accent/80 bg-accent/10 border border-accent/15 rounded-xs px-2 py-0.5 mt-2 font-medium">
+            <span className="inline-block text-[10px] text-accent/80 bg-accent/10 border border-accent/15 rounded-full px-2 py-0.5 mt-2 font-medium font-mono">
               /{workspace.slug}
             </span>
           </div>

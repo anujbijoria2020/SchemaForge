@@ -83,7 +83,7 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({
         {[1, 2, 3, 4].map((n) => (
           <div
             key={n}
-            className="rounded-sm border border-border-subtle bg-surface/30 h-44 p-6 space-y-4 animate-pulse"
+            className="rounded-xl border border-border-subtle bg-surface/30 h-44 p-6 space-y-4 animate-pulse"
           >
             <div className="flex justify-between items-center">
               <div className="h-5 w-1/2 bg-border rounded-xs" />
@@ -106,7 +106,7 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({
   // Error boundary showing retry card
   if (isError) {
     return (
-      <div className="border border-destructive/20 bg-surface/50 rounded-sm p-8 space-y-4 max-w-md mx-auto text-center shadow-lg shadow-black/20">
+      <div className="border border-destructive/20 bg-surface/50 rounded-xl p-8 space-y-4 max-w-md mx-auto text-center shadow-lg shadow-black/20">
         <div className="flex flex-col items-center gap-3">
           <AlertTriangle className="h-8 w-8 text-destructive" />
           <h3 className="text-md font-bold text-primary">Failed to load projects</h3>
@@ -122,7 +122,7 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({
   // Empty state
   if (!projects || projects.length === 0) {
     return (
-      <div className="border border-dashed border-border-subtle bg-surface/10 rounded-sm p-10 text-center flex flex-col items-center justify-center space-y-4 py-16">
+      <div className="border border-dashed border-border-subtle bg-surface/10 rounded-xl p-10 text-center flex flex-col items-center justify-center space-y-4 py-16">
         <div className="h-12 w-12 rounded-full bg-accent/5 flex items-center justify-center border border-accent/15">
           <Database className="h-6 w-6 text-accent" />
         </div>

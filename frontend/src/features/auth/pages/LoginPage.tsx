@@ -17,16 +17,13 @@ export const LoginPage: React.FC = () => {
         className="w-full max-w-md z-10"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="h-12 w-12 bg-accent rounded-sm flex items-center justify-center shadow-lg shadow-accent/20 mb-4">
+          <div className="h-12 w-12 bg-accent rounded-lg flex items-center justify-center shadow-lg shadow-accent/20 mb-4">
             <Database className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-primary">SchemaForge</h1>
-          <p className="text-secondary text-xs mt-1 font-medium tracking-wide uppercase">
-            by Vednix Technology
-          </p>
         </div>
 
-        <div className="rounded-sm border border-border bg-surface shadow-2xl p-8">
+        <div className="rounded-xl border border-border-subtle bg-surface shadow-2xl p-8">
           <div className="mb-6 text-center">
             <h2 className="text-lg font-semibold text-primary">Welcome Back</h2>
             <p className="text-secondary text-xs mt-1">Sign in to your account to continue</p>

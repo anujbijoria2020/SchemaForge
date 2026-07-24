@@ -15,6 +15,7 @@ import { EditorPage } from '../../features/editor/pages/EditorPage';
 import { VersionHistoryPage } from '../../features/versions/pages/VersionHistoryPage';
 import { NotFoundPage } from '../../shared/components/NotFoundPage';
 import { Playground } from '../Playground';
+import { LandingPage } from '../../features/landing/pages/LandingPage';
 
 export const router = createBrowserRouter([
   // Public routes wrapped in PublicRoute to redirect away if already authed
@@ -94,10 +95,10 @@ export const router = createBrowserRouter([
     path: '/playground',
     element: <Playground />,
   },
-  // Redirect root to dashboard or login
+  // Render landing page on root
   {
     path: '/',
-    element: <Navigate to="/app" replace />,
+    element: <LandingPage />,
   },
   // Fallback 404
   {

@@ -43,9 +43,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
           <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-accent/5 blur-[128px] pointer-events-none" />
           <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/5 blur-[128px] pointer-events-none" />
 
-          <div className="border border-destructive/30 bg-surface/50 max-w-lg w-full rounded-sm p-6 space-y-6 shadow-xl z-10 backdrop-blur-xs">
+          <div className="border border-destructive/30 bg-surface/50 max-w-lg w-full rounded-xl p-6 space-y-6 shadow-xl z-10 backdrop-blur-xs text-left">
             <div className="flex items-start gap-4">
-              <div className="h-10 w-10 bg-destructive/10 rounded-sm flex items-center justify-center flex-shrink-0 mt-1">
+              <div className="h-10 w-10 bg-destructive/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
                 <AlertTriangle className="h-5 w-5 text-destructive" />
               </div>
               <div className="space-y-1">
@@ -54,7 +54,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
                   An unexpected error occurred in the application. We've logged the error details.
                 </p>
                 {this.state.error && (
-                  <pre className="mt-3 p-3 bg-[#080B14]/80 border border-border-subtle rounded-xs text-[10px] text-destructive/90 overflow-x-auto max-h-32 font-mono">
+                  <pre className="mt-3 p-3 bg-[#080B14]/80 border border-border-subtle rounded-lg text-[10px] text-destructive/90 overflow-x-auto max-h-32 font-mono">
                     {this.state.error.name}: {this.state.error.message}
                     {this.state.error.stack && `\n\n${this.state.error.stack}`}
                   </pre>

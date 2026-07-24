@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users, Plus, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Users, Plus, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useWorkspace } from '../api/workspaces';
 import {
@@ -15,6 +15,7 @@ import { PendingInvitesList } from '../components/PendingInvitesList';
 import { InviteDialog } from '../components/InviteDialog';
 import { Button } from '../../../shared/components/ui/Button';
 import { useToast } from '../../../shared/components/ui/Toast';
+import { SidebarLayout } from '../../../shared/components/SidebarLayout';
 
 export const MembersPage: React.FC = () => {
   const { id: workspaceId } = useParams<{ id: string }>();
@@ -132,92 +133,80 @@ export const MembersPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-primary font-sans flex flex-col pb-16 relative overflow-hidden select-none">
-      {/* Background Decorative Glows */}
-      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-accent/5 blur-[128px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/5 blur-[128px] pointer-events-none" />
+    <SidebarLayout workspaceId={workspaceId} workspace={workspace}>
+      <div className="relative pb-16 w-full flex-1">
+        {/* Background Decorative Glows */}
+        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-accent/5 blur-[128px] pointer-events-none" />
 
-      {/* Workspace Sub-Bar (Navigation back) */}
-      <div className="border-b border-border-subtle bg-surface/10 py-3 px-6 sm:px-8">
-        <div className="max-w-7xl mx-auto">
-          <Link
-            to={`/app/workspaces/${workspaceId}`}
-            className="text-xs text-secondary hover:text-primary transition-colors duration-150 flex items-center gap-1.5 font-medium cursor-pointer"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back to {workspace.name}
-          </Link>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 mt-10 space-y-8 z-10 flex-1">
-        
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border-subtle/40 pb-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-accent" />
-              <h1 className="text-xl font-bold tracking-tight text-primary">
-                Members & Collaborators
-              </h1>
+        {/* Main Content Area */}
+        <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 mt-10 space-y-8 z-10 relative">
+          
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border-subtle/40 pb-6">
+            <div className="space-y-1 text-left">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-accent" />
+                <h1 className="text-xl font-bold tracking-tight text-primary">
+                  Members & Collaborators
+                </h1>
+              </div>
+              <p className="text-xs text-secondary leading-relaxed">
+                Manage workspace access, configure member roles, and view pending invitations for{' '}
+                <span className="font-semibold text-primary">{workspace.name}</span>.
+              </p>
             </div>
-            <p className="text-xs text-secondary leading-relaxed">
-              Manage workspace access, configure member roles, and view pending invitations for{' '}
-              <span className="font-semibold text-primary">{workspace.name}</span>.
-            </p>
+
+            {isAdminOrOwner && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsInviteOpen(true)}
+                className="flex items-center gap-1.5 font-semibold cursor-pointer self-start sm:self-center"
+              >
+                <Plus className="h-4 w-4" />
+                Invite Member
+              </Button>
+            )}
           </div>
 
+          {/* Member Table */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 pl-1 text-left">
+              <ShieldCheck className="h-4 w-4 text-accent" />
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-secondary">
+                Active Members
+              </h3>
+            </div>
+            <MemberTable
+              members={members}
+              isLoading={isMembersLoading}
+              currentUserRole={currentUserRole}
+              currentUserId={currentUser?.id}
+              onRoleChange={handleRoleChange}
+              onRemoveMember={handleRemoveMember}
+            />
+          </div>
+
+          {/* Pending Invitations List (Only visible to admin/owners) */}
           {isAdminOrOwner && (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setIsInviteOpen(true)}
-              className="flex items-center gap-1.5 font-semibold cursor-pointer self-start sm:self-center"
-            >
-              <Plus className="h-4 w-4" />
-              Invite Member
-            </Button>
+            <PendingInvitesList
+              invitations={invitations}
+              isLoading={isInvitationsLoading}
+              onRevoke={handleRevokeInvitation}
+            />
           )}
-        </div>
 
-        {/* Member Table */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 pl-1">
-            <ShieldCheck className="h-4 w-4 text-accent" />
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-secondary">
-              Active Members
-            </h3>
-          </div>
-          <MemberTable
-            members={members}
-            isLoading={isMembersLoading}
-            currentUserRole={currentUserRole}
-            currentUserId={currentUser?.id}
-            onRoleChange={handleRoleChange}
-            onRemoveMember={handleRemoveMember}
-          />
-        </div>
+        </main>
 
-        {/* Pending Invitations List (Only visible to admin/owners) */}
-        {isAdminOrOwner && (
-          <PendingInvitesList
-            invitations={invitations}
-            isLoading={isInvitationsLoading}
-            onRevoke={handleRevokeInvitation}
+        {/* Invite Dialog */}
+        {workspaceId && (
+          <InviteDialog
+            workspaceId={workspaceId}
+            open={isInviteOpen}
+            onOpenChange={setIsInviteOpen}
           />
         )}
-
-      </main>
-
-      {/* Invite Dialog */}
-      {workspaceId && (
-        <InviteDialog
-          workspaceId={workspaceId}
-          open={isInviteOpen}
-          onOpenChange={setIsInviteOpen}
-        />
-      )}
-    </div>
+      </div>
+    </SidebarLayout>
   );
 };

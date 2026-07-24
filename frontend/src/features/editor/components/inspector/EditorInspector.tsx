@@ -34,9 +34,9 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
   };
 
   return (
-    <aside className="w-80 border-l border-border bg-surface flex flex-col h-full select-none flex-shrink-0 z-20">
+    <aside className="w-80 border-l border-border-subtle bg-surface flex flex-col h-full select-none flex-shrink-0 z-20">
       {/* Inspector Header */}
-      <div className="p-4 border-b border-border/60 flex items-center gap-2">
+      <div className="p-4 border-b border-border-subtle/60 flex items-center gap-2">
         <Settings className="h-4 w-4 text-secondary" />
         <span className="text-xs font-semibold text-secondary uppercase tracking-wider">
           {hasTableSelection
@@ -70,7 +70,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
                     <HelpCircle className="h-3 w-3 text-secondary/40" />
                   </span>
                 </div>
-                <div className="w-full bg-background/40 border border-border/60 rounded-sm px-3 py-2 text-xs text-primary/70 font-mono select-none">
+                <div className="w-full bg-background/40 border border-border-subtle/60 rounded-lg px-3 py-2 text-xs text-primary/70 font-mono select-none">
                   {getDialectName()}
                 </div>
               </div>
@@ -84,7 +84,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
                   id="naming-convention"
                   value={namingConvention}
                   onChange={(e) => setNamingConvention(e.target.value)}
-                  className="w-full h-9 rounded-sm border border-border/80 bg-background/50 px-3 py-1.5 text-xs text-primary outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 cursor-pointer"
+                  className="w-full h-9 rounded-lg border border-border-subtle/80 bg-background/50 px-3 py-1.5 text-xs text-primary outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 cursor-pointer"
                 >
                   <option value="snake_case">snake_case (Recommended)</option>
                   <option value="camelCase">camelCase</option>
@@ -101,7 +101,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
                   id="pk-strategy"
                   value={pkStrategy}
                   onChange={(e) => setPkStrategy(e.target.value)}
-                  className="w-full h-9 rounded-sm border border-border/80 bg-background/50 px-3 py-1.5 text-xs text-primary outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 cursor-pointer"
+                  className="w-full h-9 rounded-lg border border-border-subtle/80 bg-background/50 px-3 py-1.5 text-xs text-primary outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 cursor-pointer"
                 >
                   <option value="uuid">UUID (v4)</option>
                   <option value="serial">Serial (Auto-increment)</option>
@@ -110,7 +110,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
               </div>
 
               {/* Auto-index Foreign Keys */}
-              <div className="flex items-center justify-between py-1 border-t border-border/30 mt-2 pt-3">
+              <div className="flex items-center justify-between py-1 border-t border-border-subtle/30 mt-2 pt-3">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs font-semibold text-primary">Auto-create FK Indexes</span>
                   <span className="text-[9px] text-secondary">Index FK columns automatically</span>
@@ -120,7 +120,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
                   role="switch"
                   aria-checked={autoIndexFk}
                   className={`relative inline-flex h-4.5 w-8 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-accent cursor-pointer shrink-0 ${
-                    autoIndexFk ? 'bg-accent' : 'bg-border/85'
+                    autoIndexFk ? 'bg-accent' : 'bg-border-subtle/85'
                   }`}
                 >
                   <span
@@ -133,7 +133,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
             </div>
 
             {/* Documentation Section */}
-            <div className="space-y-4 pt-4 border-t border-border/60">
+            <div className="space-y-4 pt-4 border-t border-border-subtle/60">
               <div>
                 <h3 className="text-xs font-bold text-primary mb-1">Documentation</h3>
                 <p className="text-[10px] text-secondary">Write a description or metadata for this database schema.</p>
@@ -144,7 +144,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
                   placeholder="e.g. Core PostgreSQL schema for SchemaForge workspace..."
                   value={schemaDoc}
                   onChange={(e) => setSchemaDoc(e.target.value)}
-                  className="w-full h-32 bg-background/50 text-xs text-primary placeholder:text-secondary/40 border border-border/80 rounded-sm p-3 outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 resize-none font-sans"
+                  className="w-full h-32 bg-background/50 text-xs text-primary placeholder:text-secondary/40 border border-border-subtle/80 rounded-lg p-3 outline-none focus:border-accent/80 focus:ring-1 focus:ring-accent/80 resize-none font-sans"
                 />
               </div>
             </div>
@@ -153,7 +153,7 @@ export const EditorInspector: React.FC<EditorInspectorProps> = ({ dialect }) => 
       </div>
 
       {/* Selection Help Panel (Bottom of Inspector) */}
-      <div className="p-3 border-t border-border bg-background/25 flex items-start gap-2">
+      <div className="p-3 border-t border-border-subtle bg-background/25 flex items-start gap-2">
         <Info className="h-4 w-4 text-accent shrink-0 mt-0.5" />
         <div className="flex flex-col gap-0.5">
           <span className="text-[10px] font-bold text-primary leading-none">
