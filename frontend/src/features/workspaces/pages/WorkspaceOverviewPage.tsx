@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, LayoutGrid, Plus, AlertTriangle } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { LayoutGrid, Plus, AlertTriangle } from 'lucide-react';
 import { useWorkspaceStore } from '../store/workspaceStore';
 import { useWorkspace } from '../api/workspaces';
-import { WorkspaceHeader } from '../components/WorkspaceHeader';
+import { SidebarLayout } from '../../../shared/components/SidebarLayout';
 import { Button } from '../../../shared/components/ui/Button';
 import { ProjectGrid } from '../../projects/components/ProjectGrid';
 import { CreateProjectDialog } from '../../projects/components/CreateProjectDialog';
@@ -93,84 +93,89 @@ export const WorkspaceOverviewPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-primary font-sans flex flex-col pb-16 relative overflow-hidden select-none">
-      {/* Background Decorative Glows */}
-      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-accent/5 blur-[128px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/5 blur-[128px] pointer-events-none" />
+    <SidebarLayout workspaceId={id} workspace={workspace}>
+      <div className="relative pb-16 w-full flex-1">
+        {/* Background Decorative Glows */}
+        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-accent/5 blur-[128px] pointer-events-none" />
 
-      {/* Header */}
-      <WorkspaceHeader workspace={workspace} />
-
-      {/* Workspace Sub-Bar (Navigation back & toggle options) */}
-      <div className="border-b border-border-subtle bg-surface/10 py-3 px-6 sm:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link
-            to="/app"
-            className="text-xs text-secondary hover:text-primary transition-colors duration-150 flex items-center gap-1.5 font-medium cursor-pointer"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-secondary font-medium">Show Archived</span>
-            <button
-              onClick={() => setShowArchived((prev) => !prev)}
-              role="switch"
-              aria-checked={showArchived}
-              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-accent cursor-pointer ${
-                showArchived ? 'bg-accent' : 'bg-border-subtle'
-              }`}
-            >
-              <span
-                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200 ${
-                  showArchived ? 'translate-x-4.5' : 'translate-x-1'
+        {/* Workspace Info Page Header */}
+        <div className="border-b border-border-subtle bg-surface/30 backdrop-blur-xs py-6 px-6 sm:px-8">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="space-y-2 text-left">
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-extrabold tracking-tight text-primary">
+                  {workspace.name}
+                </h1>
+                <span className="text-[10px] text-accent/80 bg-accent/10 border border-accent/15 rounded-xs px-2 py-0.5 font-medium font-mono">
+                  /{workspace.slug}
+                </span>
+              </div>
+              {workspace.description && (
+                <p className="text-sm text-secondary max-w-2xl leading-relaxed">
+                  {workspace.description}
+                </p>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-2 self-start md:self-center">
+              <span className="text-xs text-secondary font-medium mr-2">Show Archived</span>
+              <button
+                onClick={() => setShowArchived((prev) => !prev)}
+                role="switch"
+                aria-checked={showArchived}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-accent cursor-pointer ${
+                  showArchived ? 'bg-accent' : 'bg-border-subtle'
                 }`}
-              />
-            </button>
+              >
+                <span
+                  className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200 ${
+                    showArchived ? 'translate-x-4.5' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content Area */}
-      <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 mt-10 space-y-8 z-10 flex-1">
-        
-        {/* Section Header */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <LayoutGrid className="h-4 w-4 text-accent" />
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-secondary">
-              Database Schemas
-            </h2>
+        {/* Main Content Area */}
+        <main className="max-w-7xl w-full mx-auto px-6 sm:px-8 mt-10 space-y-8 z-10 relative">
+          {/* Section Header */}
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <LayoutGrid className="h-4 w-4 text-accent" />
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-secondary">
+                Database Schemas
+              </h2>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsCreateOpen(true)}
+              className="flex items-center gap-1 font-semibold shadow-md"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              New Project
+            </Button>
           </div>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setIsCreateOpen(true)}
-            className="flex items-center gap-1 font-semibold shadow-md"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New Project
-          </Button>
-        </div>
 
-        {/* Project cards grid */}
+          {/* Project cards grid */}
+          {id && (
+            <ProjectGrid
+              workspaceId={id}
+              showArchived={showArchived}
+              onCreateClick={() => setIsCreateOpen(true)}
+            />
+          )}
+        </main>
+
         {id && (
-          <ProjectGrid
+          <CreateProjectDialog
             workspaceId={id}
-            showArchived={showArchived}
-            onCreateClick={() => setIsCreateOpen(true)}
+            open={isCreateOpen}
+            onOpenChange={setIsCreateOpen}
           />
         )}
-
-      </main>
-
-      {id && (
-        <CreateProjectDialog
-          workspaceId={id}
-          open={isCreateOpen}
-          onOpenChange={setIsCreateOpen}
-        />
-      )}
-    </div>
+      </div>
+    </SidebarLayout>
   );
 };

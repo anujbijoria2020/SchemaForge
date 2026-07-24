@@ -53,7 +53,7 @@ export const ProfileForm: React.FC = () => {
       </div>
 
       {/* Flag warning box */}
-      <div className="flex items-start gap-3 p-3.5 bg-blue-500/5 border border-blue-500/10 rounded-sm">
+      <div className="flex items-start gap-3 p-3.5 bg-blue-500/5 border border-blue-500/10 rounded-xl">
         <AlertCircle className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <p className="text-xs font-semibold text-primary">Backend Sync Pending</p>
@@ -103,7 +103,7 @@ export const ProfileForm: React.FC = () => {
             >
               Save Profile
             </Button>
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center gap-1.5 bg-surface border border-border-subtle text-secondary text-xs rounded-sm py-1.5 px-3 z-50 whitespace-nowrap shadow-lg">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center gap-1.5 bg-surface border border-border-subtle text-secondary text-xs rounded-lg py-1.5 px-3 z-50 whitespace-nowrap shadow-lg">
               <HelpCircle className="h-3.5 w-3.5 text-accent" />
               <span>Coming soon (Backend gap)</span>
             </div>

@@ -15,6 +15,7 @@ import { useHistoryStore } from '../../store/historyStore';
 import { TableNode } from './TableNode';
 import { RelationshipEdge } from './RelationshipEdge';
 import { Plus } from 'lucide-react';
+import { useTheme } from '../../../../app/providers/ThemeProvider';
 
 interface EditorCanvasProps {
   dialect?: 'postgresql' | 'mysql' | 'sqlite' | 'mssql';
@@ -52,12 +53,16 @@ const getEdgeMarkers = (cardinality: string, isSelected: boolean) => {
 };
 
 export const EditorCanvas: React.FC<EditorCanvasProps> = ({ dialect = 'postgresql' }) => {
+  const { theme } = useTheme();
   const tables = useSchemaStore((state) => state.tables);
   const relationships = useSchemaStore((state) => state.relationships);
   const moveTable = useSchemaStore((state) => state.moveTable);
   const addRelationship = useSchemaStore((state) => state.addRelationship);
   const setCanvasState = useSchemaStore((state) => state.setCanvasState);
   const addTable = useSchemaStore((state) => state.addTable);
+
+  const dotColor = theme === 'light' ? '#CBD5E1' : '#1E293B';
+  const markerColor = theme === 'light' ? '#94A3B8' : '#475569';
 
   const handleAddFirstTable = useCallback(() => {
     addTable({
@@ -243,7 +248,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({ dialect = 'postgresq
   }, []);
 
   return (
-    <div className="w-full h-full bg-[#080B14] relative select-none">
+    <div className="w-full h-full bg-background relative select-none">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -265,12 +270,12 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({ dialect = 'postgresq
         proOptions={{ hideAttribution: true }}
       >
         <Background
-          color="#1E293B"
+          color={dotColor}
           gap={20}
           size={1}
           variant={BackgroundVariant.Dots}
         />
-        
+
         {/* Custom Marker Definitions */}
         <svg style={{ position: 'absolute', top: 0, left: 0, width: 0, height: 0, pointerEvents: 'none', zIndex: -1 }}>
           <defs>
@@ -284,7 +289,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({ dialect = 'postgresq
               orient="auto-start-reverse"
               markerUnits="strokeWidth"
             >
-              <path d="M 0 1 L 6 4 L 0 7 z" fill="#475569" />
+              <path d="M 0 1 L 6 4 L 0 7 z" fill={markerColor} />
             </marker>
             {/* Arrow selected */}
             <marker
@@ -308,7 +313,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({ dialect = 'postgresq
               orient="auto-start-reverse"
               markerUnits="strokeWidth"
             >
-              <path d="M 2 2 L 8 5 L 2 8 M 2 5 L 8 5" stroke="#475569" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path d="M 2 2 L 8 5 L 2 8 M 2 5 L 8 5" stroke={markerColor} strokeWidth="1.5" fill="none" strokeLinecap="round" />
             </marker>
             {/* Crowfoot selected */}
             <marker

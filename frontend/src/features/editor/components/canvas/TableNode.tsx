@@ -20,14 +20,14 @@ const ColumnRow: React.FC<{
   const hasRightPort = true;
 
   return (
-    <div className="relative group/row flex items-center justify-between px-3 py-1.5 hover:bg-white/2 space-y-0 text-[11px] font-mono border-b border-border/10 last:border-b-0">
+    <div className="relative group/row flex items-center justify-between px-3 py-1.5 hover:bg-primary/5 space-y-0 text-[11px] font-mono border-b border-border/10 last:border-b-0">
       {/* Left target handle */}
       {hasLeftPort && (
         <Handle
           type="target"
           position={Position.Left}
           id={`${column.id}-left`}
-          className="!absolute !top-1/2 -translate-y-1/2 !w-2.5 !h-2.5 !rounded-full !border !border-border !bg-[#0B0D10] !flex !items-center !justify-center opacity-70 group-hover/row:opacity-100 group-hover/row:scale-110 group-hover/row:border-accent transition-all duration-150 cursor-pointer !left-[-5px]"
+          className="!absolute !top-1/2 -translate-y-1/2 !w-2.5 !h-2.5 !rounded-full !border !border-border !bg-surface !flex !items-center !justify-center opacity-70 group-hover/row:opacity-100 group-hover/row:scale-110 group-hover/row:border-accent transition-all duration-150 cursor-pointer !left-[-5px]"
           style={{ pointerEvents: 'all' }}
         />
       )}
@@ -56,7 +56,7 @@ const ColumnRow: React.FC<{
           type="source"
           position={Position.Right}
           id={`${column.id}-right`}
-          className="!absolute !top-1/2 -translate-y-1/2 !w-2.5 !h-2.5 !rounded-full !border !border-border !bg-[#0B0D10] !flex !items-center !justify-center opacity-70 group-hover/row:opacity-100 group-hover/row:scale-110 group-hover/row:border-accent transition-all duration-150 cursor-pointer !right-[-5px]"
+          className="!absolute !top-1/2 -translate-y-1/2 !w-2.5 !h-2.5 !rounded-full !border !border-border !bg-surface !flex !items-center !justify-center opacity-70 group-hover/row:opacity-100 group-hover/row:scale-110 group-hover/row:border-accent transition-all duration-150 cursor-pointer !right-[-5px]"
           style={{ pointerEvents: 'all' }}
         />
       )}
@@ -114,7 +114,7 @@ export const TableNode = React.memo<TableNodeProps>(
           <div className="flex items-center gap-1 opacity-0 group-hover/table:opacity-100 transition-opacity nodrag">
             <button
               type="button"
-              className="h-5 w-5 text-secondary hover:text-primary flex items-center justify-center rounded hover:bg-white/5 cursor-pointer"
+              className="h-5 w-5 text-secondary hover:text-primary flex items-center justify-center rounded hover:bg-primary/5 cursor-pointer"
             >
               <MoreHorizontal className="h-3 w-3" />
             </button>

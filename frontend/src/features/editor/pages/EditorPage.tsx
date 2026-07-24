@@ -70,7 +70,7 @@ const EditorInner: React.FC<EditorInnerProps> = ({ project, workspace, projectDa
         {/* Sidebar */}
         <div
           className={cn(
-            "transition-all duration-300 ease-in-out border-r border-border bg-surface shrink-0 z-40",
+            "transition-all duration-300 ease-in-out border-r border-border-subtle bg-surface shrink-0 z-40",
             // Desktop (md and up) behavior
             "md:relative md:translate-x-0 md:opacity-100",
             // Mobile (below md) behavior: float over canvas
@@ -86,12 +86,12 @@ const EditorInner: React.FC<EditorInnerProps> = ({ project, workspace, projectDa
         </div>
 
         {/* Canvas Area */}
-        <div className="flex-1 flex flex-col min-w-0 h-full relative bg-[#080B14]">
+        <div className="flex-1 flex flex-col min-w-0 h-full relative bg-background">
           {/* Floating Sidebar Toggle - Shifts on mobile when sidebar is open */}
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className={cn(
-              "absolute top-4 z-50 h-8 w-8 rounded-sm bg-surface/85 border border-border backdrop-blur-md flex items-center justify-center text-secondary hover:text-primary hover:bg-surface transition-all cursor-pointer shadow-md focus:outline-none focus:ring-1 focus:ring-accent",
+              "absolute top-4 z-50 h-8 w-8 rounded-lg bg-surface/85 border border-border-subtle backdrop-blur-md flex items-center justify-center text-secondary hover:text-primary hover:bg-surface transition-all cursor-pointer shadow-md focus:outline-none focus:ring-1 focus:ring-accent",
               isSidebarOpen ? "left-[272px] md:left-4" : "left-4"
             )}
             title={isSidebarOpen ? "Hide Sidebar" : "Show Sidebar"}
@@ -103,7 +103,7 @@ const EditorInner: React.FC<EditorInnerProps> = ({ project, workspace, projectDa
           <button
             onClick={() => setIsInspectorOpen(!isInspectorOpen)}
             className={cn(
-              "absolute top-4 z-50 h-8 w-8 rounded-sm bg-surface/85 border border-border backdrop-blur-md flex items-center justify-center text-secondary hover:text-primary hover:bg-surface transition-all cursor-pointer shadow-md focus:outline-none focus:ring-1 focus:ring-accent",
+              "absolute top-4 z-50 h-8 w-8 rounded-lg bg-surface/85 border border-border-subtle backdrop-blur-md flex items-center justify-center text-secondary hover:text-primary hover:bg-surface transition-all cursor-pointer shadow-md focus:outline-none focus:ring-1 focus:ring-accent",
               isInspectorOpen ? "right-[336px] lg:right-4" : "right-4"
             )}
             title={isInspectorOpen ? "Hide Inspector" : "Show Inspector"}
@@ -131,7 +131,7 @@ const EditorInner: React.FC<EditorInnerProps> = ({ project, workspace, projectDa
         {/* Inspector */}
         <div
           className={cn(
-            "transition-all duration-300 ease-in-out border-l border-border bg-surface shrink-0 z-40",
+            "transition-all duration-300 ease-in-out border-l border-border-subtle bg-surface shrink-0 z-40",
             // Desktop (lg and up) behavior
             "lg:relative lg:translate-x-0 lg:opacity-100",
             // Mobile (below lg) behavior: float over canvas
@@ -178,11 +178,11 @@ export const EditorPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen max-h-screen h-screen bg-[#080B14] text-primary font-sans flex flex-col select-none overflow-hidden relative">
+      <div className="min-h-screen max-h-screen h-screen bg-background text-primary font-sans flex flex-col select-none overflow-hidden relative">
         {/* Top Bar Skeleton */}
-        <header className="h-14 border-b border-border bg-surface px-4 flex items-center justify-between shrink-0 animate-pulse">
+        <header className="h-14 border-b border-border-subtle bg-surface px-4 flex items-center justify-between shrink-0 animate-pulse">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="h-8 w-8 bg-border/20 rounded-sm" />
+            <div className="h-8 w-8 bg-border/20 rounded-lg" />
             <div className="h-4 w-px bg-border/20" />
             <div className="h-4 w-24 bg-border/20 rounded-xs hidden sm:block" />
             <div className="h-7 w-7 bg-border/20 rounded-sm" />
@@ -197,10 +197,10 @@ export const EditorPage: React.FC = () => {
         {/* Main Content Area Skeleton */}
         <div className="flex-1 flex overflow-hidden min-h-0 relative">
           {/* Sidebar Skeleton */}
-          <div className="hidden md:block w-64 border-r border-border bg-surface shrink-0 p-4 space-y-4 animate-pulse">
-            <div className="flex justify-between items-center pb-2 border-b border-border/60">
+          <div className="hidden md:block w-64 border-r border-border-subtle bg-surface shrink-0 p-4 space-y-4 animate-pulse">
+            <div className="flex justify-between items-center pb-2 border-b border-border-subtle/60">
               <div className="h-4 w-24 bg-border/20 rounded-xs" />
-              <div className="h-5 w-8 bg-border/20 rounded-sm" />
+              <div className="h-5 w-8 bg-border/20 rounded-lg" />
             </div>
             <div className="h-8 bg-border/20 rounded-sm" />
             <div className="space-y-2 pt-2">
@@ -217,7 +217,7 @@ export const EditorPage: React.FC = () => {
           </div>
 
           {/* Canvas Skeleton */}
-          <div className="flex-1 flex flex-col min-w-0 h-full relative bg-[#080B14]">
+          <div className="flex-1 flex flex-col min-w-0 h-full relative bg-background">
             {/* Grid dots background pattern */}
             <div 
               className="absolute inset-0 opacity-25" 
@@ -239,8 +239,8 @@ export const EditorPage: React.FC = () => {
           </div>
 
           {/* Inspector Skeleton */}
-          <div className="hidden lg:block w-80 border-l border-border bg-surface shrink-0 p-6 space-y-6 animate-pulse">
-            <div className="space-y-2 pb-4 border-b border-border/60">
+          <div className="hidden lg:block w-80 border-l border-border-subtle bg-surface shrink-0 p-6 space-y-6 animate-pulse">
+            <div className="space-y-2 pb-4 border-b border-border-subtle/60">
               <div className="h-5 w-32 bg-border/20 rounded-xs" />
               <div className="h-3.5 w-48 bg-border/20 rounded-xs" />
             </div>
@@ -261,9 +261,9 @@ export const EditorPage: React.FC = () => {
   if (isError) {
     return (
       <div className="min-h-screen bg-background text-primary font-sans flex items-center justify-center p-6 flex-col">
-        <div className="border border-destructive/30 bg-surface/50 max-w-lg w-full rounded-sm p-6 space-y-6 shadow-xl">
+        <div className="border border-destructive/30 bg-surface/50 max-w-lg w-full rounded-xl p-6 space-y-6 shadow-xl">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 bg-destructive/10 rounded-sm flex items-center justify-center flex-shrink-0">
+            <div className="h-10 w-10 bg-destructive/10 rounded-lg flex items-center justify-center flex-shrink-0">
               <AlertTriangle className="h-5 w-5 text-destructive" />
             </div>
             <div>

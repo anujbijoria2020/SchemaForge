@@ -52,7 +52,7 @@ export const RecentProjectsRail: React.FC = () => {
           ? [1, 2].map((n) => (
               <div
                 key={n}
-                className="w-full sm:w-80 flex-shrink-0 rounded-sm border border-border-subtle bg-surface/50 h-36 p-5 space-y-3 animate-pulse"
+                className="w-full sm:w-80 flex-shrink-0 rounded-xl border border-border-subtle bg-surface/50 h-36 p-5 space-y-3 animate-pulse"
               >
                 <div className="flex justify-between items-center">
                   <div className="h-3 w-16 bg-border rounded-xs" />
@@ -66,11 +66,11 @@ export const RecentProjectsRail: React.FC = () => {
               <div
                 key={project.id}
                 onClick={() => handleProjectClick(project.id)}
-                className="w-full sm:w-80 flex-shrink-0 group rounded-sm border border-border-subtle bg-surface hover:border-accent/40 transition-all duration-200 shadow-md p-5 flex flex-col justify-between h-36 cursor-pointer select-none"
+                className="w-full sm:w-80 flex-shrink-0 group rounded-xl border border-border-subtle bg-surface hover:border-accent/40 transition-all duration-200 shadow-md p-5 flex flex-col justify-between h-36 cursor-pointer select-none"
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-secondary font-mono uppercase tracking-wider bg-border-subtle/50 px-2 py-0.5 rounded-xs border border-border-subtle">
+                    <span className="text-[10px] text-secondary font-mono uppercase tracking-wider bg-border-subtle/50 px-2 py-0.5 rounded-full border border-border-subtle">
                       {project.dialect}
                     </span>
                     <span className="text-[10px] text-secondary flex items-center gap-1.5">

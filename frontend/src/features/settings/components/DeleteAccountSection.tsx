@@ -20,7 +20,7 @@ export const DeleteAccountSection: React.FC = () => {
         </p>
       </div>
 
-      <div className="border border-destructive/20 bg-destructive/5 rounded-sm p-4 space-y-4">
+      <div className="border border-destructive/20 bg-destructive/5 rounded-xl p-4 space-y-4">
         <div className="space-y-1">
           <h3 className="text-sm font-semibold text-primary">Delete Account</h3>
           <p className="text-xs text-secondary leading-relaxed">
@@ -38,7 +38,7 @@ export const DeleteAccountSection: React.FC = () => {
             >
               Delete Account
             </Button>
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center gap-1.5 bg-surface border border-border-subtle text-secondary text-xs rounded-sm py-1.5 px-3 z-50 whitespace-nowrap shadow-lg">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center gap-1.5 bg-surface border border-border-subtle text-secondary text-xs rounded-lg py-1.5 px-3 z-50 whitespace-nowrap shadow-lg">
               <HelpCircle className="h-3.5 w-3.5 text-accent" />
               <span>Coming soon (Backend gap)</span>
             </div>
