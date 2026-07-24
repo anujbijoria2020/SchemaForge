@@ -8,11 +8,11 @@ SchemaForge is designed to run as a high-performance SaaS platform.
 
 | Workspace Dashboard | Visual Schema Editor |
 | --- | --- |
-| ![Workspace Dashboard](assets/screenshots/dashboard.png) | ![Visual Schema Editor](assets/screenshots/editor.png) |
+| ![Workspace Dashboard](assets/screenshots/workspace.png) | ![Visual Schema Editor](assets/screenshots/editor.png) |
 
 | SQL Export Preview |
 | --- |
-| ![SQL Export Preview](assets/screenshots/export.png) |
+| ![SQL Export Preview](assets/screenshots/sql.png) |
 
 
 ## 🚀 Key Features
