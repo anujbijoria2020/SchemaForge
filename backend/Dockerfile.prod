@@ -1,0 +1,67 @@
+# ==========================================
+# STAGE 1: Builder
+# Compiles the TypeScript application and generates the Prisma client.
+# ==========================================
+FROM node:20-alpine AS builder
+
+# Set the working directory in the build container
+WORKDIR /app
+
+# Copy package.json and package-lock.json first to leverage Docker's layer caching.
+# This prevents reinstalling dependencies if package files haven't changed.
+COPY package*.json ./
+
+# Install dependencies using 'npm ci' which is faster and cleaner than 'npm install'
+# as it installs the exact versions listed in package-lock.json.
+RUN npm ci
+
+# Copy the prisma folder containing the schema. prisma generate requires the schema to run.
+COPY prisma ./prisma/
+
+# Generate the Prisma client. This generates the TypeScript definitions and
+# engine binaries based on our schema definitions.
+RUN npx prisma generate
+
+# Copy the remaining application source files (tsconfig.json, src directory, etc.)
+COPY tsconfig.json ./
+COPY src ./src/
+
+# Compile the TypeScript files into the 'dist/' directory as plain JavaScript.
+RUN npm run build
+
+
+# ==========================================
+# STAGE 2: Runner
+# A minimal production image containing only the compiled code and production dependencies.
+# ==========================================
+FROM node:20-alpine AS runner
+
+# Set the working directory in the runner container
+WORKDIR /app
+
+# Set the environment variable to production
+ENV NODE_ENV=--max-old-space-size=4096
+
+# Copy only the compiled application code from the builder stage
+COPY --from=builder /app/dist ./dist
+
+# Copy the installed node_modules from the builder stage (contains production packages and prisma client)
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copy the prisma folder from the builder stage (needed for running database migrations in production)
+COPY --from=builder /app/prisma ./prisma
+
+# Copy package.json and package-lock.json to access defined npm start scripts
+COPY --from=builder /app/package*.json ./
+
+# Expose the application port
+EXPOSE 4000
+
+# Create a non-root user and group for security compliance
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Switch to the non-root user so the container doesn't run with root privileges
+USER appuser
+
+# Run database migrations first to update the database schema, then start the server
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
