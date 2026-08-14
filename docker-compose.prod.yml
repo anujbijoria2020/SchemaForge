@@ -1,0 +1,145 @@
+# SchemaForge Production Environment Docker Compose Configuration
+# This file orchestrates all SchemaForge services for production deployment:
+# postgres, redis, backend API, frontend static host, and nginx reverse proxy.
+#
+# Network topology:
+# - All services are placed on the same internal bridge network: 'schemaforge_net'.
+# - ONLY 'nginx' exposes external ports (80:80) to serve public HTTP traffic.
+# - All other services communicate internally using their service names as DNS hostnames.
+
+services:
+  # ==========================================
+  # 1. DATABASE SERVICE (PostgreSQL)
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: schemaforge-postgres-prod
+    restart: always
+    # Environment variables are loaded from the production env file
+    env_file:
+      - .env.production
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - schemaforge_net
+    # PORT EXPOSURE COMMENT:
+    # No ports are exposed to the host/outside. Database queries are internal-only,
+    # initiated by the backend container inside the schemaforge_net network.
+    # This prevents public access to database ports and hardens security.
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+
+  # ==========================================
+  # 2. CACHE SERVICE (Redis)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: schemaforge-redis-prod
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    env_file:
+      - .env.production
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - schemaforge_net
+    # PORT EXPOSURE COMMENT:
+    # No ports are exposed to the host/outside. Redis is strictly for backend session,
+    # rate-limiting, and caching, accessed only by the backend service internally.
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      retries: 5
+
+  # ==========================================
+  # 3. BACKEND API SERVICE
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: schemaforge-backend-prod
+    restart: always
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      NODE_ENV: production
+      PORT: 4000
+      FRONTEND_URL: http://localhost
+      BCRYPT_ROUNDS: 12
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - schemaforge_net
+    # PORT EXPOSURE COMMENT:
+    # No ports are exposed to the host/outside. The API is proxied by Nginx internally
+    # on port 4000. Isolating the API service prevents unauthorized direct HTTP access.
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4000/api/health"]
+      interval: 15s
+      retries: 3
+
+  # ==========================================
+  # 4. FRONTEND STATIC FILE HOST
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: schemaforge-frontend-prod
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - schemaforge_net
+    # PORT EXPOSURE COMMENT:
+    # No ports are exposed. The built static files are served via internal Nginx inside
+    # this container on port 80. The main ingress Nginx proxies traffic to it internally.
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80"]
+      interval: 15s
+
+  # ==========================================
+  # 5. INGRESS NGINX REVERSE PROXY
+  # ==========================================
+  nginx:
+    image: nginx:alpine
+    container_name: schemaforge-nginx-prod
+    restart: always
+    ports:
+      - "80:80"
+    # PORT EXPOSURE COMMENT:
+    # Port 80 is the ONLY port exposed to the outside. This container acts as the single
+    # ingress entry point for all HTTP traffic, routing API/Socket traffic to backend
+    # and static files to frontend using the shared docker network.
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    networks:
+      - schemaforge_net
+
+networks:
+  schemaforge_net:
+    driver: bridge
+
+volumes:
+  postgres_prod_data: {}
+  redis_prod_data: {}
