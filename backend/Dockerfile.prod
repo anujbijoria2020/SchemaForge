@@ -41,6 +41,8 @@ RUN npx prisma generate
 # Copy the remaining application source files (tsconfig.json, src directory, etc.)
 COPY tsconfig.json ./
 COPY src ./src/
+COPY scripts ./scripts/
+
 
 # Compile the TypeScript files into the 'dist/' directory as plain JavaScript.
 RUN npm run build
