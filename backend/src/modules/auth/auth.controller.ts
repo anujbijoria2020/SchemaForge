@@ -4,7 +4,7 @@ import { registerSchema, loginSchema } from './auth.dto';
 import { env } from '@/config/env';
 import { ApiError } from '@/utils/ApiError';
 import { asyncHandler } from '@/utils/asyncHandler';
-import { successResponse, createdResponse, noContentResponse } from '@/utils/response';
+import { createdResponse, noContentResponse, successResponse } from '@/utils/response';
 
 const authService = new AuthService();
 
@@ -22,10 +22,10 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-  return createdResponse(res, {
-    user: result.user,
-    accessToken: result.accessToken,
-  });
+return createdResponse(res, {
+  user: result.user,
+  accessToken: result.accessToken,
+});
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
@@ -34,10 +34,11 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-  return successResponse(res, {
-    user: result.user,
-    accessToken: result.accessToken,
-  });
+return successResponse(res, {
+  user: result.user,
+  accessToken: result.accessToken,
+});
+
 });
 
 export const refresh = asyncHandler(async (req: Request, res: Response) => {
@@ -50,9 +51,10 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-  return successResponse(res, {
-    accessToken: result.accessToken,
-  });
+ return successResponse(res, {
+  accessToken: result.accessToken,
+});
+
 });
 
 export const logout = asyncHandler(async (req: Request, res: Response) => {
@@ -63,7 +65,7 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
     path: '/',
   });
 
-  return noContentResponse(res);
+ return noContentResponse(res);
 });
 
 export const getMe = asyncHandler(async (req: Request, res: Response) => {
@@ -74,5 +76,5 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
 
   const user = await authService.getMe(userId);
 
-  return successResponse(res, { user });
+ return successResponse(res, { user });
 });
