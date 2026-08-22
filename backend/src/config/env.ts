@@ -16,7 +16,22 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
-  FRONTEND_URL: z.string().url('FRONTEND_URL must be a valid URL'),
+  FRONTEND_URL: z
+    .string()
+    .transform((val) => val.split(',').map((url) => url.trim().replace(/\/$/, '')))
+    .refine(
+      (urls) => urls.every((url) => {
+        try {
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      }),
+      {
+        message: 'FRONTEND_URL must contain valid URL(s) separated by commas',
+      }
+    ),
   BCRYPT_ROUNDS: z.preprocess(
     (val) => (val === undefined || val === '' ? undefined : Number(val)),
     z.number().int().positive().default(12)
