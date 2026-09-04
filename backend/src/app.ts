@@ -13,13 +13,21 @@ import { errorHandler } from './middlewares/errorHandler.middleware';
 
 const app = express();
 
+// Trust reverse proxy (Render, Railway, Heroku, Nginx) for secure cookies
+app.set('trust proxy', 1);
+
 // 1. Helmet for security headers
 app.use(helmet());
 
 // 2. CORS configuration (credentials: true, origin from env)
+const allowedOrigins = [
+  ...env.FRONTEND_URL,
+  ...(env.FRONTEND_URL_PREVIEW || []),
+];
+
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: allowedOrigins,
     credentials: true,
   })
 );

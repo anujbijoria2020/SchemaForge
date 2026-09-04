@@ -1,4 +1,3 @@
-import { refresh } from '@/modules/auth/auth.controller';
 import dotenv from 'dotenv';
 dotenv.config();
 import { z } from 'zod';
@@ -33,20 +32,25 @@ const envSchema = z.object({
         message: 'FRONTEND_URL must contain valid URL(s) separated by commas',
       }
     ),
-  FRONTEND_URL_PREVIEW: z.string()
-    .transform((val) => val.split(',').map((url) => url.trim().replace(/\/$/, '')))
+  FRONTEND_URL_PREVIEW: z
+    .string()
+    .optional()
+    .default('')
+    .transform((val) =>
+      val ? val.split(',').map((url) => url.trim().replace(/\/$/, '')) : []
+    )
     .refine(
-      (urls) => urls.every((url) => {
-        try {
-          new URL(url);
-          return true;
-        }
-        catch {
-          return false;
-        }
-      }),
+      (urls) =>
+        urls.every((url) => {
+          try {
+            new URL(url);
+            return true;
+          } catch {
+            return false;
+          }
+        }),
       {
-        message: "FRONTEND_URL_PREVIEW must contain valid URL(s) separated by commas"
+        message: 'FRONTEND_URL_PREVIEW must contain valid URL(s) separated by commas',
       }
     ),
   BCRYPT_ROUNDS: z.preprocess(
