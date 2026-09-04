@@ -12,6 +12,7 @@ const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
   sameSite: env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const,
+  partitioned: env.NODE_ENV === 'production',
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 };
@@ -22,10 +23,11 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-return createdResponse(res, {
-  user: result.user,
-  accessToken: result.accessToken,
-});
+  return createdResponse(res, {
+    user: result.user,
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+  });
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
@@ -34,11 +36,11 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-return successResponse(res, {
-  user: result.user,
-  accessToken: result.accessToken,
-});
-
+  return successResponse(res, {
+    user: result.user,
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+  });
 });
 
 export const refresh = asyncHandler(async (req: Request, res: Response) => {
@@ -51,10 +53,10 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
- return successResponse(res, {
-  accessToken: result.accessToken,
-});
-
+  return successResponse(res, {
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+  });
 });
 
 export const logout = asyncHandler(async (req: Request, res: Response) => {
@@ -62,10 +64,11 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
     httpOnly: true,
     secure: env.NODE_ENV === 'production',
     sameSite: env.NODE_ENV === 'production' ? 'none' as const : 'lax' as const,
+    partitioned: env.NODE_ENV === 'production',
     path: '/',
   });
 
- return noContentResponse(res);
+  return noContentResponse(res);
 });
 
 export const getMe = asyncHandler(async (req: Request, res: Response) => {

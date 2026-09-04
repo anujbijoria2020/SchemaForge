@@ -28,10 +28,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: !!user,
     }),
   setInitializing: (isInitializing) => set({ isInitializing }),
-  logout: () =>
+  logout: () => {
+    localStorage.removeItem('sf_refresh_token');
     set({
       user: null,
       accessToken: null,
       isAuthenticated: false,
-    }),
+    });
+  },
 }));

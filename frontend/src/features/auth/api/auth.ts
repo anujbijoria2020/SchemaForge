@@ -11,6 +11,7 @@ export interface LoginResponse {
       displayName: string;
     };
     accessToken: string;
+    refreshToken?: string;
   };
 }
 
@@ -23,6 +24,7 @@ export interface RegisterResponse {
       displayName: string;
     };
     accessToken: string;
+    refreshToken?: string;
   };
 }
 
@@ -37,6 +39,9 @@ export const useLoginMutation = () => {
       });
     },
     onSuccess: (response) => {
+      if (response.data.refreshToken) {
+        localStorage.setItem('sf_refresh_token', response.data.refreshToken);
+      }
       setUser(response.data.user, response.data.accessToken);
     },
   });
@@ -53,6 +58,9 @@ export const useRegisterMutation = () => {
       });
     },
     onSuccess: (response) => {
+      if (response.data.refreshToken) {
+        localStorage.setItem('sf_refresh_token', response.data.refreshToken);
+      }
       setUser(response.data.user, response.data.accessToken);
     },
   });
